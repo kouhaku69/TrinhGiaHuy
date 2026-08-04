@@ -1,6 +1,7 @@
 baseURL = "https://kouhaku69.github.io/TrinhGiaHuy/"
 relativeURLs = true
 canonifyURLs = true
+buildFuture = true
 
 # Change the default theme to be use when building the site with Hugo
 theme = "hugo-theme-learn"
