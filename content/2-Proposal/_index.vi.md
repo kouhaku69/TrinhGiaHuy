@@ -5,366 +5,176 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-# TaskHub - Nền tảng quản lý nhiệm vụ và tiến độ theo mô hình DevSecOps trên AWS
-
-> **Bản đề xuất Document:** [xem trên Google Docs](https://docs.google.com/document/d/14wEgjSuUkQs6SSVXwNQr4wmjwORjntfDizzC4zmPZIY/edit?tab=t.0)
+# Balan Coffee & Roastery – Hiện đại hóa nền tảng bán cà phê trực tuyến trên AWS
 
 ### **1. Tóm tắt điều hành**
 
-TaskHub là nền tảng quản lý nhiệm vụ và tiến trình được thiết kế nhằm
-giúp các nhóm làm việc hoặc doanh nghiệp vừa và nhỏ có thể quản lý công
-việc, thời hạn và tiến trình một cách trực quan và an toàn.
+Balan Coffee & Roastery là dự án hiện đại hóa hệ thống website bán cà phê hiện có bằng cách triển khai lên nền tảng AWS, nhằm cải thiện khả năng vận hành, bảo mật và khả năng quan sát hệ thống.
 
-Hệ thống được phát triển theo mô hình **DevSecOps**, phát triển hoàn
-toàn trên **AWS Serverless**, đảm bảo khả năng mở rộng, bảo mật và tối
-ưu chi phí.
+Ứng dụng được triển khai trên một instance **Amazon EC2** sử dụng **Docker Compose** để chạy đồng thời container frontend và backend, kết hợp **Amazon CloudFront** làm lớp phân phối nội dung cho toàn bộ yêu cầu từ người dùng.
 
-Quy trình phát triển khai báo sử dụng **AWS CodePipeline** và
-**CodeBuild** để tự động hóa CI/CD và kiểm tra bảo mật.
+Backend kết nối với các dịch vụ AWS được quản lý hoàn toàn (managed services) gồm **Amazon RDS (PostgreSQL)**, **Amazon S3**, **Amazon Cognito**, **Amazon SES**, **Amazon Bedrock** và **AWS Secrets Manager**, đảm bảo dữ liệu, xác thực, gửi email và tính năng AI được xử lý an toàn và tách biệt khỏi tầng ứng dụng.
+
+Khả năng giám sát vận hành được đảm bảo thông qua **Amazon CloudWatch** kết hợp **CloudWatch Agent** cài đặt trực tiếp trên EC2.
 
 ### **2. Phát biểu vấn đề**
 
 **Vấn đề:**
 
-- Doanh nghiệp nhỏ và các nhóm dự án thường gặp khó khăn trong việc quản
-  lý khối lượng công việc, theo dõi tiến độ và phân phối giữa các thành
-  viên.
-
-- Các công cụ quản lý phổ biến như Jira hoặc Asana thường có chi phí cao
-  và không được hỗ trợ liền mạch với quy trình DevSecOps hoặc môi trường
-  AWS.
+- Hệ thống Balan Coffee hiện tại được xây dựng và vận hành theo cách truyền thống, chưa tận dụng các dịch vụ quản lý của AWS, dẫn đến khó khăn trong việc mở rộng, sao lưu dữ liệu và giám sát tình trạng hệ thống.
+- Thông tin nhạy cảm (khóa API, thông tin kết nối cơ sở dữ liệu) nếu được cấu hình thủ công hoặc lưu trực tiếp trong mã nguồn sẽ tiềm ẩn rủi ro bảo mật cao.
+- Trải nghiệm khách hàng còn hạn chế do chưa có tính năng gợi ý sản phẩm thông minh dựa trên hành vi hoặc sở thích người dùng.
 
 **Giải pháp:**
 
-- TaskHub sử dụng kiến trúc Serverless trên AWS để xây dựng nền tảng nhẹ
-  nhàng, bảo mật và tiết kiệm chi phí.
-
-- Nền tảng được phát triển bằng **AWS Lambda**, **API Gateway**,
-  **DynamoDB**, **Cognito** và **S3/CloudFront**, đồng thời tích hợp
-  **AWS CodePipeline** cho CI/CD và kiểm tra bảo mật động.
+- Container hóa frontend và backend bằng **Docker Compose**, triển khai trên **Amazon EC2**, giúp đơn giản hóa quá trình vận hành trong khuôn khổ workshop trong khi vẫn giữ toàn quyền kiểm soát hạ tầng.
+- Sử dụng **Amazon RDS (PostgreSQL)** trong private subnet để đảm bảo dữ liệu quan hệ được quản lý, sao lưu tự động và cách ly khỏi truy cập trực tiếp từ Internet.
+- Tích hợp **Amazon Cognito** cho xác thực người dùng, **AWS Secrets Manager** để quản lý an toàn các thông tin cấu hình nhạy cảm, **Amazon S3** để lưu trữ tệp/hình ảnh sản phẩm, **Amazon SES** để gửi email giao dịch, và **Amazon Bedrock** để xây dựng tính năng chatbot/gợi ý sản phẩm bằng AI.
+- Toàn bộ hệ thống được giám sát tập trung qua **Amazon CloudWatch**.
 
 **Lợi ích và lợi tức đầu tư**
 
-Giải pháp TaskHub mang lại nhiều lợi ích thiết thực cho các nhóm phát
-triển và doanh nghiệp vừa và nhỏ. Hệ thống đóng vai trò là một nền tảng
-trung tâm giúp quản lý nhiệm vụ, theo dõi tiến trình và phân quyền thành
-viên một cách hiệu quả. Việc ứng dụng mô hình serverless trên AWS giúp
-giảm thiểu chi phí vận hành, tối ưu tài nguyên và tăng khả năng mở rộng
-khi nhu cầu sử dụng tăng cao. Bên cạnh đó, nền tảng này vẫn hỗ trợ xây
-dựng môi trường thực hành DevSecOps, tạo tiền đề cho các nhóm nghiên cứu
-và phát triển có thể mở rộng các dự án hơn nữa. Theo ước tính từ Máy
-tính giá AWS, chi phí vận hành hệ thống chỉ khoảng **0,66 USD mỗi
-tháng**, tương đương **7,92 USD mỗi năm**, trong khi toàn bộ tầng hạ
-tầng ban đầu tận dụng dịch vụ dùng chung từ AWS, không phát sinh phần
-cứng vật lý. Dự kiến thời gian hoàn vốn đạt được trong 6--12 tháng nhờ
-giảm thiểu đáng kể công việc quản lý thủ công và tối ưu hóa quy trình
-làm việc nội bộ.
+Giải pháp giúp Balan Coffee & Roastery chuyển đổi từ mô hình vận hành thủ công sang mô hình có cấu trúc rõ ràng trên AWS, tách biệt tầng ứng dụng, dữ liệu và bảo mật. Việc sử dụng các dịch vụ quản lý (RDS, S3, Cognito, SES, Bedrock) giúp giảm khối lượng công việc vận hành thủ công, đồng thời chi phí hạ tầng ở giai đoạn workshop chủ yếu nằm trong hạn mức miễn phí/chi phí thấp của AWS (EC2 loại nhỏ, RDS single-AZ, S3 dung lượng thấp). Đây là nền tảng có thể mở rộng dần lên kiến trúc production đầy đủ (ECS, Auto Scaling, Load Balancer) mà không cần thiết kế lại từ đầu.
 
 ### **3. Kiến trúc giải pháp**
 
-Nền tảng TaskHub được xây dựng dựa trên kiến trúc AWS Serverless, đảm
-bảo khả năng mở rộng hoạt động, hiệu suất cao và nền tảng vận hành chi
-phí. Hệ thống tập trung vào công việc quản lý nhiệm vụ, công việc nhóm
-và dự án tiến độ theo thời gian thực, đồng thời duy trì quy trình phát
-triển khai tự động hóa thông tin qua mô hình DevSecOps.
+Nền tảng Balan Coffee & Roastery được xây dựng theo mô hình triển khai container trên **Amazon EC2**, kết hợp với các dịch vụ quản lý của AWS để xử lý dữ liệu, xác thực, lưu trữ, gửi email và tính năng AI. Kiến trúc đảm bảo tách biệt rõ giữa lớp phân phối nội dung, lớp ứng dụng (public subnet) và lớp dữ liệu (private subnet).
 
-Kiến trúc tổng thể bao gồm các thành phần chính như Amazon API Gateway
-đảm nhận trách nhiệm tiếp nhận và phân phối yêu cầu từ người dùng, AWS
-Lambda xử lý phần phụ trợ nghiệp vụ và tương tác với cơ sở dữ liệu
-Amazon DynamoDB để lưu trữ thông tin nhiệm vụ, người dùng và quyền
-truy cập.
+Luồng xử lý chính: người dùng truy cập qua **HTTPS**, yêu cầu được **Amazon CloudFront** phân phối tới **Internet Gateway**, sau đó chuyển đến **Amazon EC2** đặt trong public subnet của VPC. Trên EC2, **Docker** chạy đồng thời container **Frontend** và **Backend**. Backend giao tiếp với **Amazon RDS (PostgreSQL)** đặt trong private subnet (cổng TCP 5432, được kiểm soát bởi Security Group), đồng thời gọi đến các dịch vụ **Amazon S3** (lưu trữ file/ảnh), **Amazon Bedrock** (AI gợi ý sản phẩm/chatbot), **Amazon SES** (gửi email) và **Amazon Cognito** (xác thực người dùng).
 
-Phần giao diện web được lưu trữ thông tin qua **Amazon S3** và phân
-phối toàn cầu bằng **Amazon CloudFront**, trong khi AWS Cognito đảm
-bảo độ xác thực và phân quyền cho người dùng.
+Toàn bộ hoạt động của EC2 được **CloudWatch Agent** thu thập (metrics hệ thống, log ứng dụng) và gửi về **Amazon CloudWatch** để hiển thị qua Dashboard và thiết lập cảnh báo.
 
-Quy trình CI/CD được tự động hóa bằng **AWS CodePipeline** kết hợp với
-**AWS CodeBuild**, giúp phát triển khai báo và kiểm tra bảo mật liên
-tục mà không cần quản lý máy chủ.
+Kiến trúc tổng thể được mô tả chi tiết trong sơ đồ bên dưới:
 
-Toàn bộ kiến trúc được bảo vệ bởi **AWS WAF** và **AWS KMS** nhằm tăng
-cường bảo mật dữ liệu và đảm bảo bổ sung quy chuẩn DevSecOps. **AWS
-X-Ray** được sử dụng để theo dõi hiệu suất và phân tích độ trễ. Kiến
-trúc tổng hợp được mô tả chi tiết trong sơ đồ bên dưới:
-
-
-![anh1](/images/2-Proposal/image1.png)
+![Kiến trúc giải pháp Balan Coffee & Roastery](/images/2-Proposal/architecture.jpg)
 
 ### Dịch vụ AWS đã sử dụng
 
-1.  **Amazon Route 53:** Dịch vụ DNS đáng tin cậy cao, định tuyến
-    traffic.
+1.  **Amazon EC2:** Máy chủ tính toán, chạy ứng dụng thông qua Docker.
+2.  **Docker (Docker Compose):** Đóng gói và chạy đồng thời container frontend và backend.
+3.  **Amazon CloudFront:** Phân phối nội dung toàn cầu, xử lý HTTPS và cải thiện hiệu năng tải trang.
+4.  **Amazon RDS (PostgreSQL):** Cơ sở dữ liệu quan hệ, lưu trữ toàn bộ dữ liệu nghiệp vụ (sản phẩm, đơn hàng, người dùng).
+5.  **Amazon S3:** Lưu trữ đối tượng (hình ảnh sản phẩm, tệp tĩnh).
+6.  **Amazon Cognito:** Xác thực và phân quyền người dùng.
+7.  **Amazon SES:** Gửi email giao dịch/thông báo.
+8.  **Amazon Bedrock:** Cung cấp năng lực AI cho chatbot và tính năng gợi ý sản phẩm.
+9.  **AWS Secrets Manager:** Lưu trữ và quản lý an toàn các thông tin cấu hình nhạy cảm (biến môi trường, khóa kết nối).
+10. **Amazon CloudWatch (và CloudWatch Agent):** Thu thập metrics, log và hiển thị dashboard giám sát hệ thống.
+11. **Amazon VPC (Public/Private Subnet, Internet Gateway, Security Group):** Thiết kế mạng, cô lập tầng dữ liệu khỏi truy cập trực tiếp từ Internet.
 
-2.  **AWS WAF (Web Application Firewall):** Lớp bảo vệ nâng cao, chặn
-    các cuộc tấn công phổ biến.
+### **Thiết kế thành phần**
 
-3.  **Amazon CloudFront:** Phân phối giao diện người dùng và nội dung
-    tĩnh toàn cầu.
+1.  **Lớp giao diện người dùng (Frontend):**
 
-4.  **Amazon S3 (Simple Storage Service):** Lưu trữ tĩnh toàn bộ mã
-    nguồn giao diện web (Next.js build files).
+    - Chạy dưới dạng container Docker trên EC2, phục vụ giao diện web cho khách hàng.
+    - Được phân phối toàn cầu qua **Amazon CloudFront**, đảm bảo tốc độ tải nhanh và luôn sử dụng HTTPS.
 
-5.  **Amazon Cognito:** Quản lý xác thực và cấp quyền người dùng.
+2.  **Lớp xử lý nghiệp vụ (Backend):**
 
-6.  **Amazon API Gateway:** Lớp giao tiếp trung gian, thực hiện xác thực
-    và định tuyến các API yêu cầu đến Lambda.
+    - Chạy dưới dạng container Docker riêng biệt trên cùng EC2, xử lý toàn bộ logic nghiệp vụ (sản phẩm, đơn hàng, xác thực, tích hợp AI).
+    - Truy cập các thông tin cấu hình nhạy cảm (kết nối RDS, API key của Bedrock/SES...) thông qua **AWS Secrets Manager**, không lưu trực tiếp trong mã nguồn.
 
-7.  **AWS Lambda:** Xử lý nghiệp vụ chính. Được tích hợp để ghi nhật ký
-    hoạt động vào CloudWatch Logs.
+3.  **Lớp dữ liệu (Cơ sở dữ liệu):**
 
-8.  **Amazon DynamoDB:** Cơ sở dữ liệu NoSQL hiệu suất cao. Dữ liệu được
-    mã hóa bằng **AWS KMS**.
+    - **Amazon RDS PostgreSQL** đặt trong private subnet, chỉ cho phép kết nối từ Security Group của EC2 backend (cổng 5432), không mở ra Internet.
+    - Đảm nhận lưu trữ toàn bộ dữ liệu giao dịch, sản phẩm và thông tin người dùng.
 
-9.  **AWS SNS (Simple Notification Service):** Đảm nhận vai trò thông
-    báo không đồng bộ.
+4.  **Bảo mật và xác thực:**
 
-10. **AWS Secrets Manager:** Lưu trữ, quản lý và luân phiên các bí mật
-    một cách an toàn.
+    - **Amazon Cognito** cung cấp cơ chế đăng ký/đăng nhập và xác thực bằng JWT cho người dùng.
+    - **Security Group** kiểm soát chặt chẽ luồng truy cập giữa các thành phần (chỉ backend mới truy cập được RDS).
+    - **AWS Secrets Manager** đảm bảo các thông tin nhạy cảm được luân phiên và quản lý tập trung.
+    - Toàn bộ truy cập từ người dùng đều đi qua **HTTPS** nhờ CloudFront.
 
-11. **AWS CodePipeline, CodeBuild, & CodeGuru:**
+5.  **Giám sát và vận hành:**
 
-12. **CodePipeline/CodeBuild:** Xây dựng và tự động hóa quy trình CI/CD.
-    CodeBuild thực hiện các bài kiểm tra tự động và Quét Bảo mật Tĩnh
-    (SAST).
-
-13. **AWS CodeGuru:** Công cụ phân tích mã nguồn tự động, được tích hợp
-    vào quy trình CI/CD để **đưa ra đề xuất thông minh về việc tối ưu
-    hóa hiệu suất và cải thiện chất lượng mã**, đặc biệt quan trọng
-    trong môi trường Lambda.
-
-14. **AWS CloudFormation:** Dịch vụ **Cơ sở hạ tầng dưới dạng Mã (IaC)**
-    để triển khai toàn bộ tài nguyên.
-
-15. **AWS CloudWatch Logs & AWS X-Ray:** **CloudWatch Logs** thu thập
-    nhật ký. **CloudWatch** sử dụng dữ liệu này để thiết lập cảnh báo.
-    **AWS X-Ray** cung cấp khả năng theo dõi truy vết (tracing) chuyên
-    sâu.
-
-### **Thiết kế Thành phần**
-
-1.  **Lớp Người dùng giao diện (Frontend):**
-
-    - **Giao diện:** Ứng dụng **Next.js** được build dưới dạng tĩnh
-      (Static Build).
-
-    - **Lưu trữ & Phân phối:** Các file tĩnh được lưu trữ an toàn trong
-      **Amazon S3** (được cấu hình là Origin cho CloudFront). Giao diện
-      này được phân phối toàn cầu bằng **Amazon CloudFront** với độ trễ
-      thấp, đồng thời được bảo vệ bởi **AWS WAF** (Web Application
-      Firewall) tại lớp Edge.
-
-2.  **Lớp Xử lý nghiệp vụ (Backend):**
-
-    - **Cổng API:** **Amazon API Gateway** tiếp nhận mọi yêu cầu. Nó
-      được cấu hình với **Cognito Authorizer** để xác thực Token của
-      người dùng trước khi chuyển tiếp yêu cầu.
-
-    - **Xử lý:** Các **Lambda Functions** chịu trách nhiệm xử lý logic
-      nghiệp vụ (CRUD nhiệm vụ, quản lý nhóm, phân quyền).
-
-    - **Quản lý Bí mật:** Mỗi Lambda function truy cập các thông tin
-      nhạy cảm (như khóa API ngoài) thông qua **AWS Secrets Manager**,
-      đảm bảo các bí mật không bao giờ được mã hóa cứng trong code.
-
-3.  **Lớp Dữ liệu (Cơ sở dữ liệu):**
-
-    - **Cơ sở dữ liệu:** **Amazon DynamoDB** được sử dụng để lưu trữ dữ
-      liệu nhiệm vụ, tiến độ và cấu hình người dùng. DynamoDB hoạt động
-      ở chế độ **On-Demand** để tự động mở rộng và tối ưu chi phí.
-
-    - **Bảo mật Dữ liệu:** Toàn bộ dữ liệu tại chỗ (at-rest) trong
-      DynamoDB được mã hóa bằng khóa quản lý bởi **AWS KMS (Key
-      Management Service)**, đáp ứng tiêu chuẩn bảo mật cao nhất.
-
-4.  **Bảo mật và Xác thực:**
-
-    - **Xác thực:** **Amazon Cognito** cung cấp cơ chế đăng nhập, quản
-      lý phiên và phân quyền người dùng theo vai trò (Role-Based Access
-      Control). Cognito cũng hỗ trợ **Xác thực Đa Yếu tố (MFA)** và tích
-      hợp SSO (Single Sign-On).
-
-    - **Bảo vệ Edge:** **AWS WAF** được đặt trước CloudFront để ngăn
-      chặn các cuộc tấn công DDoS ở Lớp 7 (Layer 7) và các lỗi bảo mật
-      phổ biến khác (OWASP Top 10).
-
-5.  **Triển khai và Giám sát:**
-
-    - **CI/CD DevSecOps:** Mã nguồn được lưu trữ trên **GitLab** (theo
-      sơ đồ) và được tự động hóa qua chuỗi **AWS
-      CodePipeline/CodeBuild**. Quá trình này bao gồm việc chạy
-      **CodeGuru** để tối ưu code trước khi triển khai hạ tầng qua
-      **CloudFormation**.
-
-    - **Giám sát & Gỡ lỗi:** **AWS CloudWatch Logs** thu thập nhật ký
-      chi tiết từ tất cả các dịch vụ. **AWS CloudWatch** sử dụng các
-      nhật ký này để thiết lập cảnh báo tự động khi phát hiện lỗi hoặc
-      sự cố. **AWS X-Ray** cung cấp cái nhìn tổng quan về hiệu suất
-      luồng giao dịch, hỗ trợ gỡ lỗi và tối ưu độ trễ.
+    - **CloudWatch Agent** cài trên EC2 thu thập metrics hạ tầng (CPU, RAM, disk) và log ứng dụng.
+    - **Amazon CloudWatch** tổng hợp dữ liệu để hiển thị Dashboard và có thể thiết lập cảnh báo khi phát hiện bất thường.
 
 ### **4. Triển khai kỹ thuật**
 
-Việc phát triển dự án TaskHub được chia thành hai phần chính--- xây dựng
-hạ tầng AWS serverless và phát triển nền tảng quản lý nhiệm vụ --- mỗi
-phần bao gồm giai đoạn thực hiện chính như sau:
+Dự án được triển khai theo các giai đoạn chính sau:
 
-**Khai báo các giai đoạn phát triển**
+**Giai đoạn 1: Thiết kế kiến trúc**
 
-**Giai đoạn 1: Thiết kế và Lập mô hình (Tháng 1)**
+- Nghiên cứu mô hình triển khai container trên EC2, lựa chọn các dịch vụ AWS phù hợp (RDS, S3, Cognito, SES, Bedrock, Secrets Manager).
+- Thiết kế sơ đồ mạng VPC (public/private subnet), quy tắc Security Group.
+- **Sản phẩm đầu ra:** Sơ đồ kiến trúc giải pháp (Solution Architecture).
 
-- **Hành động chính: Nghiên cứu Serverless/DevSecOps, lựa chọn các dịch
-  vụ cốt lõi (Lambda, DynamoDB, API Gateway). Thiết kế chi tiết sơ đồ
-  kiến trúc và mô hình dữ liệu NoSQL.**
+**Giai đoạn 2: Khởi tạo hạ tầng AWS**
 
-- **Sản phẩm đầu ra: Sơ đồ Kiến trúc và Tài liệu Mô hình Dữ liệu.**
+- Tạo VPC, subnet, Internet Gateway, Security Group.
+- Khởi tạo EC2, cấu hình Docker/Docker Compose, khởi tạo RDS PostgreSQL, S3 bucket.
+- **Sản phẩm đầu ra:** Hạ tầng AWS sẵn sàng cho việc triển khai ứng dụng.
 
-**Giai đoạn 2: Khởi tạo Hạ tầng dưới dạng Mã (Tháng 2)**
+**Giai đoạn 3: Tích hợp dịch vụ quản lý**
 
-- **Hành động chính: Tính toán chi phí vận hành chi tiết. Sử dụng AWS
-  CDK để xây dựng mã nguồn IaC cho các dịch vụ nền tảng (S3, CloudFront,
-  Cognito), đảm bảo khả năng tái tạo môi trường.**
+- Tích hợp Cognito cho xác thực, Secrets Manager cho cấu hình nhạy cảm, SES cho gửi email, Bedrock cho tính năng gợi ý/chatbot AI.
+- **Sản phẩm đầu ra:** Backend hoàn chỉnh với đầy đủ tích hợp AWS.
 
-- **Sản phẩm đầu ra: Mã nguồn AWS CDK cơ sở và Báo cáo Chi phí Vận
-  hành.**
+**Giai đoạn 4: Triển khai và giám sát**
 
-**Giai đoạn 3: Thiết lập Tự động hóa DevSecOps (Tháng 2--3)**
-
-- **Hành động chính: Thiết lập CI/CD Pipeline hoàn chỉnh
-  (CodePipeline/CodeBuild). Tích hợp các công cụ AWS CodeGuru và SAST để
-  tự động hóa việc kiểm tra chất lượng và bảo mật mã nguồn trước khi
-  triển khai.**
-
-- **Sản phẩm đầu ra: CodePipeline đã hoạt động và quy trình quét bảo mật
-  tự động.**
-
-**Giai đoạn 4: Phát triển và Triển khai (Tháng 3--4)**
-
-- **Hành động chính: Phát triển chức năng (Lambda Functions với
-  TypeScript) và giao diện (Next.js). Thực hiện Kiểm tra Tích hợp
-  (Integration Testing) giữa các dịch vụ. Triển khai bản chính thức
-  (Production release) qua Pipeline.**
-
-- **Sản phẩm đầu ra: TaskHub Beta Version (hoàn chỉnh CRUD) và Báo cáo
-  Kiểm tra.**
+- Deploy frontend/backend qua Docker Compose trên EC2, cấu hình CloudFront.
+- Cài đặt CloudWatch Agent, xây dựng Dashboard giám sát, kiểm thử toàn bộ luồng ứng dụng.
+- **Sản phẩm đầu ra:** Hệ thống vận hành hoàn chỉnh, có giám sát và sẵn sàng demo.
 
 **Yêu cầu kỹ thuật**
 
-- **Kiến trúc và Công cụ: Toàn bộ hệ thống được khai báo và quản lý bằng
-  AWS CDK để đảm bảo tính nhất quán của hạ tầng.**
+- **Hạ tầng:** VPC với public subnet (EC2, Internet Gateway) và private subnet (RDS), Security Group kiểm soát truy cập.
+- **Công nghệ:** Docker/Docker Compose cho container hóa; PostgreSQL cho cơ sở dữ liệu.
+- **Bảo mật:** Cognito cho xác thực (JWT), Secrets Manager cho quản lý cấu hình, HTTPS qua CloudFront.
+- **Giám sát:** CloudWatch Agent + CloudWatch (Metrics, Logs, Dashboard).
+- **Khu vực triển khai:** ap-southeast-1 (Singapore) để tối ưu tốc độ truy cập tại Việt Nam.
 
-- **Công nghệ: Backend sử dụng TypeScript/Node.js. Giao diện sử dụng
-  Next.js (React).**
+### **5. Dòng thời gian & các mốc quan trọng**
 
-- **Quản lý Mã nguồn: Mã nguồn trên GitLab, triển khai tự động bằng AWS
-  CodePipeline.**
+- **Giai đoạn chuẩn bị:** Nghiên cứu kiến trúc, phân chia công việc theo vai trò từng thành viên trong nhóm.
+- **Giai đoạn 1:** Thiết kế kiến trúc và hạ tầng mạng (VPC, subnet, Security Group).
+- **Giai đoạn 2:** Khởi tạo hạ tầng AWS (EC2, RDS, S3) và triển khai container cơ bản.
+- **Giai đoạn 3:** Tích hợp các dịch vụ quản lý (Cognito, Secrets Manager, SES, Bedrock).
+- **Giai đoạn 4:** Hoàn thiện giám sát (CloudWatch), kiểm thử và demo sản phẩm.
 
-- **Giám sát: Cấu hình CloudWatch, X-Ray, và CloudWatch Logs để giám sát
-  hiệu suất và gỡ lỗi chuyên sâu.**
+### **6. Phân công thực hiện**
 
-- **Yêu cầu Phi chức năng: Hệ thống được đặt tại Singapore
-  (ap-southeast-1) để tối ưu tốc độ tại Việt Nam, có khả năng mở rộng
-  lên 50 người dùng và sử dụng AWS KMS để mã hóa dữ liệu.**
-
-### **5. Dòng thời gian & Các quan quan trọng**
-
-#### **Dòng thời gian dự án**
-
-- **Trước thực tập (Tháng 0):** Chuẩn bị kế hoạch, nghiên cứu DevSecOps
-  và dịch vụ AWS Serverless.
-
-- **Tháng 1:** Thiết lập môi trường phát triển, khởi động hạ tầng AWS và
-  CI/CD đường ống.
-
-- **Tháng 2:** Thiết kế kiến ​​trúc, phát triển chức năng chính và kiểm
-  tra bảo mật tự động.
-
-- **Tháng 3:** Tích hợp frontend -- backend, phát triển thử nghiệm và ra
-  mắt nền tảng.
-
-- **Sau khi ra mắt:** Bảo trì, đánh giá hiệu suất và mở rộng tính năng
-  nâng cao.
-
-### **6. Ước tính ngân sách**
-
-| Tài Nguyên | Trách Nhiệm | Tỷ Lệ (USD) / Giờ |
-|---|---|---|
-| Kiến Trúc Sư Giải Pháp [1 người] | Thiết kế Kiến trúc Hệ thống, Thiết kế API, Thiết kế Cơ sở dữ liệu, Dẫn dắt Kỹ thuật | 6 |
-| Kỹ Sư [3 người] | Phát triển Backend, Phát triển Frontend, Triển khai Bảo mật | 4 |
-| Khác (DevOps) [1 người] | CI/CD, Triển khai Đám mây, Giám sát, Bảo mật, Cấu hình Bảo mật | 4 |
-
-| Giai Đoạn Dự Án | Kiến Trúc Sư Giải Pháp | Kỹ Sư | Khác (Vui lòng chỉ định) | Tổng Giờ |
-|---|---|---|---|---|
-| Thiết kế Hệ thống & Kiến trúc | 20 | 10 | 0 | 30 |
-| Phát triển Backend | 10 | 80 | 0 | 90 |
-| Phát triển Frontend | 5 | 60 | 0 | 65 |
-| Thiết lập Bảo mật & CI/CD | 5 | 30 | 10 | 45 |
-| Kiểm thử & Triển khai | 5 | 30 | 0 | 35 |
-| **Tổng Giờ** | **45** | **210** | **10** | **265** |
-| **Tổng Chi Phí (USD)** | **270** | **840** | **40** | **800** |
-
-Phân bổ Đóng góp Chi phí giữa Đối tác, Khách hàng, AWS:
-
-| Bên | Đóng góp (USD) | % Đóng góp trên Tổng thể |
-|---|---|---|
-| Khách hàng | 0 | 0 |
-| Đối tác | 0 | 0 |
-| AWS | 800 | 100 |
+| Thành viên | Phạm vi phụ trách |
+|---|---|
+| Trần Minh Quân | Hạ tầng AWS, triển khai (VPC, EC2, Docker), cơ sở dữ liệu (RDS) và giám sát (CloudWatch) |
+| Nguyễn Võ Duy Tuân | Xác thực người dùng (Cognito) và quản lý cấu hình bí mật (Secrets Manager) |
+| Phạm Nguyễn Quang Minh | Lưu trữ file (S3), tính năng AI (Bedrock) và tích hợp API backend |
+| Trịnh Gia Huy | Tài liệu kỹ thuật (Documentation), thiết kế kiến trúc (Architecture) và demo sản phẩm |
 
 ### **7. Đánh giá rủi ro**
 
 **Ma trận rủi ro**
 
-- Sự cố mạng hoặc gián đoạn dịch vụ AWS: Tác động trung bình, khả năng
-  trung bình.
+- Sự cố hoặc gián đoạn dịch vụ AWS: Tác động trung bình, khả năng thấp.
+- EC2 đơn instance gặp sự cố (không có Auto Scaling/Load Balancer): Tác động cao, khả năng trung bình.
+- Cấu hình Security Group sai dẫn đến lộ cổng RDS: Tác động cao, khả năng thấp.
+- Vượt hạn mức sử dụng miễn phí của Bedrock/SES: Tác động trung bình, khả năng trung bình.
+- Mất dữ liệu do thiếu sao lưu định kỳ: Tác động cao, khả năng thấp.
 
-- Khai báo CI/CD lỗi: Tác động cao, khả năng thấp.
+**Chiến lược giảm thiểu**
 
-- Vượt qua ngân sách AWS: Tác động trung bình, khả năng thấp.
-
-- Lỗi bảo mật: Tác động cao, khả năng trung bình.
-
-- Giảm hiệu suất khi tải tăng: Tác động trung bình, khả năng trung bình.
-
-**Giảm thiểu Chiến lược**
-
-- Sử dụng AWS đa vùng và giám sát CloudWatch/X-Ray.
-
-- Kiểm tra và kiểm tra mã nguồn trước khi khai báo thông qua
-  **CodePipeline**.
-
-- Cài đặt cảnh báo chi phí qua AWS Budgets.
-
-- Quét tự động bảo mật bằng **CodeBuild** (thay thế cho GitHub Actions).
+- Thiết lập cảnh báo qua CloudWatch khi tài nguyên EC2/RDS vượt ngưỡng.
+- Rà soát định kỳ cấu hình Security Group, chỉ mở cổng cần thiết.
+- Bật sao lưu tự động (automated backup) cho RDS.
+- Theo dõi mức sử dụng Bedrock/SES qua CloudWatch để tránh vượt hạn mức.
 
 **Kế hoạch dự phòng**
 
-- Duy trì môi trường dàn dựng để khôi phục nhanh chóng.
-
-- Sử dụng CloudFormation và AWS Backup để sao lưu cấu hình và dữ liệu.
+- Lưu trữ cấu hình hạ tầng dưới dạng tài liệu để có thể dựng lại nhanh khi cần.
+- Có thể mở rộng sang ECS/Auto Scaling khi cần đảm bảo tính sẵn sàng cao hơn (tham khảo phần Kết quả mong đợi).
 
 ### **8. Kết quả mong đợi**
 
 **Cải tiến kỹ thuật**
 
-- **Tự động hóa toàn diện:** Chuyển đổi hoàn toàn quy trình phát triển
-  sang mô hình **DevSecOps** tự động. Thời gian triển khai (Deploy) hệ
-  thống mới chỉ mất **dưới 6 phút**.
-
-- **Hiệu suất Đảm bảo:** Ứng dụng hoạt động nhanh chóng (API phản hồi
-  **dưới 150ms**) và ổn định (**99.9% Uptime**) nhờ kiến trúc
-  Serverless.
-
-- **Bảo mật Tích hợp:** Quét và khắc phục tự động các lỗi bảo mật cấp
-  cao ngay trong quá trình Code Build.
-
-- **Sẵn sàng Mở rộng:** Nền tảng có khả năng mở rộng để phục vụ nhiều
-  người dùng và xử lý lượng truy cập lớn mà không cần thay đổi cấu trúc.
+- **Hiện đại hóa hạ tầng:** Chuyển từ vận hành thủ công sang mô hình container hóa trên AWS với các dịch vụ quản lý (RDS, S3, Cognito, SES, Bedrock).
+- **Bảo mật tốt hơn:** Cách ly cơ sở dữ liệu trong private subnet, quản lý bí mật tập trung qua Secrets Manager, xác thực qua Cognito.
+- **Giám sát tập trung:** Toàn bộ hệ thống được theo dõi qua CloudWatch, phát hiện sớm sự cố.
+- **Trải nghiệm khách hàng tốt hơn:** Tích hợp tính năng gợi ý sản phẩm/chatbot AI qua Amazon Bedrock.
 
 **Giá trị dài hạn**
 
-- **Tạo Tài sản Kỹ thuật:** Tạo ra bộ mã **AWS CDK/CloudFormation** hoàn
-  chỉnh. Đây là khuôn mẫu kiến trúc Serverless đã được tối ưu chi phí,
-  có thể tái sử dụng cho **các dự án khác** của nhóm.
-
-- **Nền tảng Vững chắc:** Thiết lập môi trường quản lý công việc và phát
-  triển theo tiêu chuẩn công nghiệp (DevSecOps), sẵn sàng cho việc mở
-  rộng tính năng trong tương lai.
+- **Nền tảng có thể mở rộng:** Kiến trúc hiện tại là bước đệm để mở rộng lên **Amazon ECS, Application Load Balancer, Auto Scaling Group, Route 53, AWS WAF, AWS Certificate Manager** và **CI/CD Pipeline** trong tương lai, theo đúng định hướng đã nêu trong tài liệu kiến trúc giải pháp.
+- **Tài sản kỹ thuật:** Tài liệu kiến trúc và cấu hình hạ tầng có thể tái sử dụng làm nền tảng cho các dự án tương tự của nhóm.

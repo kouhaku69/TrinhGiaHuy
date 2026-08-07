@@ -1,138 +1,105 @@
 ---
 title: "Event 3"
-date: 2025-11-29
+date: 2026-06-13
 weight: 3
 chapter: false
-pre: "<b>4.3 </b>"
+pre: "<b> 4.3. </b>"
 ---
 
-# Summary Report: "AWS Cloud Mastery Series #3 - Well-Architected Security Pillar"
+# Summary Report: "First Cloud Journey Meetup - Career, DevOps, and AWS Architecture"
 
 ### Event Objectives
 
-- Master the 5 core pillars of AWS Well-Architected Security Framework
-- Understand modern security threats and best practices in cloud environment
-- Learn comprehensive security implementation from identity management to incident response
-- Apply security principles in real-world enterprise scenarios
+- Gain practical insights into careers and workplace culture in technology companies
+- Better understand the role, foundational knowledge, and mindset of a DevOps Engineer
+- Explore the development path from the First Cloud Journey community to an AWS Partner environment
+- Learn about a scalable URL-shortening service architecture on AWS
 
-### Event Agenda & Highlights
+### Main Content by Session
 
-#### 8:30 – 8:50 AM | Opening & Security Foundation
+#### Session 1 | A Real-World Story: Working Culture at a Multinational Corporation
+
 **Main content:**
-- Role of Security Pillar in Well-Architected Framework
-- Core principles: Least Privilege – Zero Trust – Defense in Depth
-- Shared Responsibility Model understanding
-- Top cloud security threats in Vietnam's enterprise environment
+
+- Practical responsibilities of a Data Analytics Engineer: creating reports, designing dashboards, performing root-cause analysis, and supporting decision-making
+- Four important capabilities: critical thinking, communication, data storytelling, and problem-solving
+- A development path from Follower and Learner to Problem Solver, System Thinker, and Leader
+- A common multinational recruitment process: screening, capability assessment, technical interviews, and cultural-fit evaluation
+- Values such as No-Blame Post-Mortems, a Caring & Inclusive environment, and working according to global standards
 
 **Key takeaway:**
-Gained foundational understanding of AWS security philosophy and how shared responsibility model applies to different service layers. Learned about current security landscape and common vulnerabilities in Vietnamese cloud environments.
 
-#### 8:50 – 9:30 AM | Pillar 1 — Identity & Access Management
+I learned that analytical capability goes beyond producing reports; it also involves identifying root causes, communicating insights, and recommending solutions. For long-term growth, technology professionals need to move from a task-completion mindset toward problem-solving and system optimization.
+
+#### Session 2 | What Does a DevOps Engineer Really Do?
+
 **Main content:**
-- Modern IAM Architecture: Users, Roles, Policies best practices
-- Avoiding long-term credentials and implementing temporary access
-- IAM Identity Center: SSO implementation and permission sets
-- SCP & permission boundaries for multi-account governance
-- MFA implementation, credential rotation strategies, Access Analyzer utilization
-- Mini Demo: IAM Policy validation and access simulation
+
+- Clarification of common misconceptions that define DevOps solely as CI/CD, Docker, Kubernetes, cloud, or production incident handling
+- Explanation of how the DevOps role varies with company size, product type, team structure, and infrastructure maturity
+- A foundation-first learning path: Linux, networking, Python or Golang, Git, CI/CD, and containers
+- Encouragement to build small projects that practice deployment, automation, monitoring, troubleshooting, and system recovery
+- Emphasis on understanding principles rather than copying commands, identifying the correct problem owner, asking “why,” and communicating clearly
 
 **Key takeaway:**
-Mastered modern IAM patterns, understood the critical importance of eliminating long-term credentials, and gained hands-on experience with policy validation tools. Learned multi-account security governance strategies.
 
-#### 9:30 – 9:55 AM | Pillar 2 — Detection & Continuous Monitoring
+I recognized that DevOps is not a fixed list of tools but a systems mindset that helps teams deliver and operate software reliably. Tools may change, but foundational knowledge, self-learning, automation, and communication remain core capabilities.
+
+#### Session 3 | From First Cloud AI Journey to AWS Partner
+
 **Main content:**
-- CloudTrail organization-level logging and management
-- GuardDuty threat detection and Security Hub centralization
-- Comprehensive logging: VPC Flow Logs, ALB logs, S3 access logs
-- Alerting and automation with EventBridge integration
-- Detection-as-Code approach for infrastructure and security rules
+
+- A journey from student curiosity to First Cloud Journey, community workshops, hands-on labs, and university projects
+- The role of a portfolio in demonstrating capabilities and connecting knowledge with real-world problems
+- Introduction to the First Cloud AI Journey Program, AWS Student Builder Group Program, and AWS Community Builder Program
+- Opportunities to participate in events, build communities, earn badges, and develop leadership ability
+- Career opportunities at AWS Partners and the “share back” spirit of supporting the next generation
 
 **Key takeaway:**
-Understood comprehensive monitoring strategy across all AWS layers, learned how to implement automated threat detection and response, and gained insight into treating security rules as code for better governance.
 
-#### 9:55 – 10:10 AM | Coffee Break
-Networking with security professionals and AWS experts.
+I learned that an effective cloud journey combines study, practice, projects, portfolio development, and community contribution. Securing a job is only the beginning; lasting value comes from solving real problems and sharing knowledge with others.
 
-#### 10:10 – 10:40 AM | Pillar 3 — Infrastructure Protection
+#### Session 4 | A Scalable URL Shortening Service on AWS
+
 **Main content:**
-- VPC segmentation strategies and network isolation
-- Private vs public subnet placement best practices
-- Security Groups vs NACLs: practical application models
-- WAF + Shield + Network Firewall integration
-- Workload protection: EC2, ECS/EKS security fundamentals
+
+- Explanation of the basic URL-shortening workflow and the limitations of a simple architecture when traffic grows
+- A frontend using Amazon Route 53, Amazon CloudFront, AWS WAF, and AWS Amplify
+- A backend using Amazon ECS/AWS Fargate, Application Load Balancer, Amazon ElastiCache for Redis, and Amazon DynamoDB in a multi-Availability Zone architecture
+- A Key Generation Service that pre-generates short codes and places them in a Redis queue, enabling fast URL-creation responses and reducing code-collision risk
+- The cache-aside pattern: read from Redis first and query DynamoDB only on a cache miss
+- Emphasis on separation of concerns, defense at the edge, pre-computation, and independent optimization of read and write paths
 
 **Key takeaway:**
-Mastered network security layering approach, understood when to use different network security controls, and learned workload-specific security implementations for containers and compute services.
 
-#### 10:40 – 11:10 AM | Pillar 4 — Data Protection
-**Main content:**
-- KMS: key policies, grants, and automated rotation
-- Encryption at-rest & in-transit: S3, EBS, RDS, DynamoDB implementation
-- Secrets Manager & Parameter Store rotation patterns
-- Data classification frameworks and access guardrails
+I learned that a scalable system must be designed according to its traffic characteristics. Separating read and write paths, pre-generating codes, using caching, and moving the security layer closer to users can reduce latency, limit bottlenecks, and protect the core system more effectively.
 
-**Key takeaway:**
-Deep understanding of AWS encryption services, learned practical patterns for secrets management and rotation, and understood how to implement data classification and protection strategies across different service types.
+### Key Lessons Learned
 
-#### 11:10 – 11:40 AM | Pillar 5 — Incident Response
-**Main content:**
-- IR lifecycle according to AWS best practices
-- Practical playbooks for common scenarios:
-  - Compromised IAM credentials
-  - S3 public exposure incidents
-  - EC2 malware detection and response
-- Snapshot creation, workload isolation, evidence collection procedures
-- Automated response implementation using Lambda and Step Functions
+- Foundational knowledge and problem-solving thinking have more lasting value than memorizing tools
+- Data should be transformed into insights and actions instead of ending with reports
+- DevOps combines systems, automation, operations, and team communication
+- Portfolios and community activities turn learning into demonstrable capabilities
+- Cloud architecture must balance performance, scalability, security, cost, and operability
 
-**Key takeaway:**
-Gained practical incident response skills with AWS-specific tools, learned automated response patterns, and understood how to implement security orchestration for faster incident resolution.
+### Application to Study and Work
 
-#### 11:40 – 12:00 PM | Wrap-Up & Q&A
-**Main content:**
-- Comprehensive review of all 5 security pillars
-- Common pitfalls and real-world challenges in Vietnamese enterprises
-- Security learning roadmap: Security Specialty and Solutions Architect Pro certifications
+- Build a small project with CI/CD, containers, monitoring, and operational documentation
+- Practice presenting data-analysis results using a problem–cause–solution structure
+- Improve my portfolio with AWS labs and projects that have clear architectures
+- Design a proof of concept for a URL shortener using Redis and DynamoDB
+- Participate actively in community activities and share what I have learned
 
-### Key Takeaways
+### Personal Contribution
 
-- **Comprehensive Security Framework:** Deep understanding of all 5 Well-Architected Security Pillars and their interconnections
-- **Modern IAM Practices:** Mastery of identity and access management with zero-trust principles
-- **Detection & Response:** Implementation of comprehensive monitoring and automated incident response
-- **Infrastructure Security:** Network segmentation and workload protection strategies
-- **Data Protection:** Encryption and secrets management best practices
-- **Practical Application:** Real-world security scenarios and enterprise-specific challenges
-
-### Work Applications
-
-- Implement comprehensive security assessment using Well-Architected Security Pillar framework
-- Redesign IAM architecture following modern best practices and eliminating long-term credentials
-- Set up automated threat detection and response using GuardDuty, Security Hub, and EventBridge
-- Implement network segmentation and workload protection for current infrastructure
-- Establish data classification and encryption standards across all services
-- Develop incident response playbooks and automation for common security scenarios
+As an attendee, I actively recorded and organized the content of the four sessions into three areas: career development, DevOps thinking, and AWS architecture design. Connecting the lessons with my learning plan helped me identify priority skills and ways to turn knowledge into practical projects.
 
 ### Event Experience
 
-Participating in "AWS Cloud Mastery Series #3" on Well-Architected Security Pillar was an invaluable experience that provided comprehensive understanding of cloud security best practices and real-world implementation strategies.
+The meetup on June 13, 2026, provided a balanced perspective on technology and career development. Alongside DevOps and AWS architecture knowledge, discussions of analytical thinking, corporate culture, portfolios, and communities helped me better understand how to develop my capabilities sustainably.
 
-#### Highlights
-- **Expert-led Security Training:** Learning from AWS security specialists with deep enterprise experience
-- **Hands-on Demonstrations:** Practical demos of IAM policy validation, threat detection, and incident response
-- **Real-world Case Studies:** Learning from actual security incidents and response scenarios
-- **Comprehensive Coverage:** All 5 security pillars covered with practical implementation guidance
+#### Event Photos
+![Event photo](/images/4-EventParticipated/event3.1.jpg)
+![Event photo](/images/4-EventParticipated/event3.2.jpg)
 
-#### Important Lessons
-- Security is not a one-time implementation but a continuous process requiring constant monitoring and improvement
-- Zero-trust architecture requires fundamental changes in how we approach identity and access management
-- Automation is critical for effective security at scale, especially for detection and incident response
-- Data protection must be implemented at every layer, from infrastructure to application level
-
-#### Event Images
-![Event Image](/images/4-EventParticipated/event3.1.jpg)
-![Event Image](/images/4-EventParticipated/event3.2.jpg)
-![Event Image](/images/4-EventParticipated/event3.3.jpg)
-![Event Image](/images/4-EventParticipated/event3.4.jpg)
-![Event Image](/images/4-EventParticipated/event3.5.jpg)
-![Event Image](/images/4-EventParticipated/event3.6.jpg)
-
-> This security-focused event significantly enhanced my understanding of cloud security architecture and provided practical tools for implementing enterprise-grade security in AWS environments. The comprehensive coverage of all security pillars and hands-on approach made complex security concepts accessible and immediately applicable.
+> Overall, the event helped me connect technical expertise with a professional mindset and the spirit of community contribution. This is an important foundation for continued growth in Cloud/DevOps and for building solutions with real-world applicability.

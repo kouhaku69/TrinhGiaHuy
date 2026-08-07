@@ -1,48 +1,65 @@
 ---
 title: "Events Participated"
-date: "2025-09-09"
+date: "2026-08-03"
 weight: 4
 chapter: false
 pre: " <b> 4. </b> "
 ---
 
-During my internship, I participated in three important events. Each one was a memorable experience that provided new, interesting, and useful knowledge, along with gifts and wonderful moments.
+Throughout my studies and the development of my AWS, Cloud, DevOps, and AI skills, I participated in four community events. Each event provided practical knowledge, career perspectives, and lessons that can be applied to future projects.
 
-### [Event 1](4.1-Event1/)  
-&emsp;**Event Name:** AI/ML/GenAI on AWS
+### [Event 1](4.1-Event1/)
 
-&emsp;**Date & Time:** 09:00, November 15, 2025  
+&emsp;**Event name:** First Cloud AI Journey Community Meetup - AWS Skills, Mindset, Hackathon, and DevOps
 
-&emsp;**Location:** 26th Floor, Bitexco Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City  
+&emsp;**Time:** 09:00, May 30, 2026
 
-&emsp;**Role:** Attendee  
+&emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City
 
-&emsp;**Content Description:** Comprehensive workshop on AI/ML/GenAI on AWS, including Amazon SageMaker, Foundation Models on Bedrock, Prompt Engineering, RAG, and building GenAI chatbots.
+&emsp;**Role in the event:** Attendee
 
-&emsp;**Value Gained:** Deep understanding of AWS AI/ML ecosystem, practical skills with SageMaker and Bedrock, ability to apply AI/GenAI to real-world projects.
+&emsp;**Content description:** The event covered learning AWS through Cloud Quest and Floci, overcoming procrastination and lack of confidence, hackathon experience, and the role of DevOps in preventing project risks.
 
-### [Event 2](4.2-Event2/)  
-&emsp;**Event Name:** AWS Cloud Mastery Series #2 - DevOps on AWS
+&emsp;**Value gained:** I learned how to combine learning tools with real AWS environments; strengthened my initiative, confidence, teamwork, and project-scope management; and understood how DevOps improves collaboration, automation, and continuous feedback.
 
-&emsp;**Date & Time:** 09:00, November 17, 2025  
+### [Event 2](4.2-Event2/)
 
-&emsp;**Location:** 26th Floor, Bitexco Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City  
+&emsp;**Event name:** First Cloud Journey Meetup - Cloud, DevOps, AI, and Career Development
 
-&emsp;**Role:** Attendee  
+&emsp;**Time:** 09:00, June 6, 2026
 
-&emsp;**Content Description:** Event focused on DevOps practices on AWS, including CI/CD pipelines, Infrastructure as Code, Container services, and Monitoring & Observability.
+&emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City
 
-&emsp;**Value Gained:** Mastery of DevOps culture and implementation on AWS, proficiency in CI/CD with CodeCommit/CodeBuild/CodeDeploy/CodePipeline, deep understanding of IaC and container orchestration.
+&emsp;**Role in the event:** Attendee
 
-### [Event 3](4.3-Event3/)  
-&emsp;**Event Name:** AWS Cloud Mastery Series #3 - Well-Architected Security Pillar
+&emsp;**Content description:** The meetup featured six topics: Docker and containerization; combining AWS WAF with Machine Learning for attack detection; WebSockets on AWS for multiplayer games; effective teamwork; AWS Neptune for GraphRAG; and the career path from IT Helpdesk to Cloud/DevOps.
 
-&emsp;**Date & Time:** 08:30, November 29, 2025  
+&emsp;**Value gained:** I expanded my knowledge of cloud-native technologies, cybersecurity, serverless systems, AI, and system operations. I also gained a clearer understanding of the importance of technical foundations, automation, monitoring, communication, self-learning, and hands-on experience in career development.
 
-&emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City  
+### [Event 3](4.3-Event3/)
 
-&emsp;**Role:** Attendee  
+&emsp;**Event name:** First Cloud Journey Meetup - Career, DevOps, and AWS Architecture
 
-&emsp;**Content Description:** In-depth workshop on the 5 security pillars of AWS Well-Architected Framework: Identity & Access Management, Detection, Infrastructure Protection, Data Protection, and Incident Response.
+&emsp;**Time:** 09:00, June 13, 2026
 
-&emsp;**Value Gained:** Comprehensive understanding of cloud security architecture, mastery of modern IAM practices with zero-trust principles, skills to implement comprehensive monitoring and automated incident response.  
+&emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City
+
+&emsp;**Role in the event:** Attendee
+
+&emsp;**Content description:** The event focused on Data Analytics work and multinational corporate culture, the real responsibilities of a DevOps Engineer, the journey from First Cloud AI Journey to an AWS Partner, and the architecture of a scalable URL-shortening service on AWS.
+
+&emsp;**Value gained:** I learned how analytical thinking, foundational knowledge, automation, and communication work together to solve problems; recognized the role of portfolios and communities; and understood how performance, scalability, security, cost, and operations must be balanced when designing cloud architectures.
+
+### [Event 4](4.4-Event4/)
+
+&emsp;**Event name:** FCAJ x Agentic AI Build Week - Show Up. Build. Pitch. WIN!
+
+&emsp;**Time:** 09:00, July 25, 2026
+
+&emsp;**Location:** 26th Floor, Bitexco Financial Tower, 02 Hai Trieu Street, Ben Nghe Ward, District 1, Ho Chi Minh City
+
+&emsp;**Role in the event:** Attendee
+
+&emsp;**Content description:** The event presented the journeys of teams building and pitching Agentic AI products, including conversational food-ordering AI, a multi-agent business strategy analysis system, AI-assisted architecture and Infrastructure as Code generation, Computer Vision for crowd-flow monitoring, and AI-assisted anti-money laundering investigations.
+
+&emsp;**Value gained:** I learned how to transform an AI idea into a demonstrable MVP, identify pain points, control scope, assign roles, and communicate product value. I also recognized the importance of guardrails, logging, output validation, and human-in-the-loop controls in Agentic AI systems.

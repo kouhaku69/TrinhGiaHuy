@@ -1,249 +1,361 @@
 ---
 title: "Blog 1"
-date: "2025-07-09"
+date: "2026-07-31"
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
 
+# AWS Cost Anomaly Detection: Detect unusual bills and investigate root causes with Amazon Q
 
-# Develop and monitor a Spark application using existing data in Amazon S3 with Amazon SageMaker Unified Studio
-
-by Amit Maindola and Abhilash Nagilla | on July 9, 2025 | in [Amazon SageMaker Data & AI Governance](https://aws.amazon.com/blogs/big-data/category/analytics/amazon-sagemaker-data-ai-governance/), [Amazon SageMaker Lakehouse](https://aws.amazon.com/blogs/big-data/category/analytics/amazon-sagemaker-lakehouse/), [Amazon SageMaker Unified Studio](https://aws.amazon.com/blogs/big-data/category/analytics/amazon-sagemaker-unified-studio/), [Analytics](https://aws.amazon.com/blogs/big-data/category/analytics/), [Technical How-to](https://aws.amazon.com/blogs/big-data/category/post-types/technical-how-to/)
-
----
-
-Organizations face significant challenges managing their big data analytics workloads. Data teams struggle with fragmented development environments, complex resource management, inconsistent monitoring, and cumbersome manual scheduling processes. These issues lead to lengthy development cycles, inefficient resource utilization, reactive troubleshooting, and difficult-to-maintain data pipelines. These challenges are especially critical for enterprises processing terabytes of data daily for business intelligence (BI), reporting, and machine learning (ML). Such organizations need unified solutions that streamline their entire analytics workflow.
-
-The next generation of [Amazon SageMaker](https://aws.amazon.com/sagemaker/) combined with [Amazon EMR](https://aws.amazon.com/emr/) in [Amazon SageMaker Unified Studio](https://aws.amazon.com/sagemaker/unified-studio/) addresses these pain points through an integrated development environment (IDE) where data workers can develop, test, and refine Spark applications in a consistent environment. [Amazon EMR Serverless](https://aws.amazon.com/emr/serverless/) reduces the cluster management burden by dynamically provisioning resources based on workload requirements, and integrated monitoring tools help teams quickly identify performance bottlenecks.
-
-Integration with [Apache Airflow](https://airflow.apache.org/) through [Amazon Managed Workflows for Apache Airflow](https://aws.amazon.com/managed-workflows-for-apache-airflow/) (Amazon MWAA) provides robust scheduling capabilities, and the pay-only-for-resources-used model delivers significant cost savings.
-
-In this post, we demonstrate how to develop and monitor a Spark application using existing data in [Amazon Simple Storage Service](http://aws.amazon.com/s3) (Amazon S3) with SageMaker Unified Studio.
+**Adapted from AWS Cloud Financial Management Blog and AWS Documentation** | Topics: FinOps, Cost Optimization, Amazon Q, CloudTrail
 
 ---
 
-## Solution overview
+A common fear when learning AWS is:
 
-This solution uses SageMaker Unified Studio to execute and monitor Spark applications, highlighting integration capabilities. We demonstrate the following key steps:
+> “What if I accidentally leave an expensive resource running?”
 
-1. Create an EMR Serverless compute environment for interactive applications using SageMaker Unified Studio
-2. Create and configure Spark applications
-3. Use [TPC-DS](https://www.tpc.org/tpcds/) data to build and run Spark applications using [Jupyter](https://jupyter.org/) notebooks in SageMaker Unified Studio
-4. Monitor application performance and schedule periodic runs with Amazon MWAA integration  
-5. Analyze results in SageMaker Unified Studio to optimize workflows
+In a small account, opening Cost Explorer manually may be enough. In an environment with many accounts, Regions, and resources, finding out which service increased, which resource caused the increase, and who changed it can take much longer.
 
----
+AWS Cost Anomaly Detection is designed to identify unusual spending patterns. In June 2026, AWS added **AI-powered cost investigation**, allowing Amazon Q to analyze anomalies in plain language and help trace likely causes.
 
-## Prerequisites
+Primary sources:
 
-To follow this tutorial, you need the following requirements:
-
-- **An AWS account** – If you don't have an account yet, you can [create one](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
-- **A SageMaker Unified Studio domain** – For instructions, see [Create an Amazon SageMaker Unified Studio domain – quick setup](https://docs.aws.amazon.com/sagemaker-unified-studio/latest/adminguide/create-domain-sagemaker-unified-studio-quick.html)
-- **A demo project** – Create a demo project in your SageMaker Unified Studio domain. For instructions, see [Create a project](https://docs.aws.amazon.com/sagemaker-unified-studio/latest/userguide/getting-started-create-a-project.html). For this example, we choose a profile with **All capabilities** in the project configuration section
-
----
-## Adding EMR Serverless to compute
-
-Complete the following steps to create an EMR Serverless compute environment for building Spark applications:
-
-1. In SageMaker Unified Studio, open the project you created as a prerequisite and choose **Compute**
-2. Choose **Data processing**, then choose **Add compute**
-3. Choose **Create new compute resources**, then choose **Next**
-![blog1](/images/3-Blog/BDB-5127-EMR-Add-Compute-1-New.png)
-4. Choose **EMR Serverless**, then choose **Next**
-![blog1](/images/3-Blog/BDB-5127-EMR-Serverless-2-New.png)
-5. Enter a name for **Compute name**
-6. For **Release label**, choose **emr-7.5.0**
-7. For **Permission mode**, choose **Compatibility**
-8. Choose **Add compute**
-
-The EMR Serverless application initialization process takes a few minutes. After creation is complete, you can view the compute in SageMaker Unified Studio.
-![blog1](/images/3-Blog/BDB-5127-Compute-3-1.png)
-
-The above steps illustrate how you set up an Amazon EMR Serverless application in SageMaker Unified Studio to run interactive PySpark workloads. In the following steps, we will build and monitor the Spark application in the interactive JupyterLab workspace.
+- [AWS Blog – Introducing AI-Powered Cost Investigations For Cost Anomalies](https://aws.amazon.com/blogs/aws-cloud-financial-management/introducing-ai-powered-cost-investigations-for-cost-anomalies/)
+- [AWS Cost Anomaly Detection](https://aws.amazon.com/aws-cost-management/aws-cost-anomaly-detection/)
+- [AWS Documentation – Getting started with AWS Cost Anomaly Detection](https://docs.aws.amazon.com/cost-management/latest/userguide/getting-started-ad.html)
+- [AWS Documentation – Investigating anomaly root causes with Amazon Q Developer](https://docs.aws.amazon.com/cost-management/latest/userguide/investigating-ad.html)
 
 ---
 
-## Developing, monitoring, and debugging Spark applications in Jupyter notebooks
+## 1. Why AWS Budgets is not enough by itself
 
-In this section, we build a Spark application using the TPC-DS dataset in SageMaker Unified Studio. With [Amazon SageMaker Data Processing](https://aws.amazon.com/sagemaker/data-processing/), you can focus on transforming and analyzing data without having to manage compute capacity or open-source applications, saving time and reducing costs.
+AWS Budgets is useful for the question:
 
-SageMaker Data Processing provides a unified development experience from Amazon EMR, [AWS Glue](https://aws.amazon.com/glue), [Amazon Redshift](http://aws.amazon.com/redshift), [Amazon Athena](http://aws.amazon.com/athena), and Amazon MWAA in the same notebook and query interface. You can automatically provision capacity on [Amazon Elastic Compute Cloud](http://aws.amazon.com/ec2) (Amazon EC2) or EMR Serverless. Autoscaling rules manage changing compute demands to optimize performance and execution time.
+> “Will my monthly bill exceed $50?”
 
-### Implementation steps:
+Anomaly detection answers a different question:
 
-1. After completing the previous preparation steps, go to SageMaker Studio and open your project
-2. Choose **Build**, then choose **JupyterLab**
-The notebook takes about 30 seconds to initialize and connect to the workspace
-3. Under the **Notebook** category, choose **Python 3 (ipykernel)**
-4. In the first cell, next to **Local Python**, select the dropdown menu and choose **PySpark**
-5. Choose the dropdown menu next to **Project.Spark** and select the **EMR-S Compute** compute
-6. Run the following code to develop your Spark application. This example reads a 3 TB TPC-DS dataset in Parquet format from a public S3 bucket:
-```python
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/store/").createOrReplaceTempView("store")
+> “Is today's spending behavior unusual compared with how this workload normally runs?”
+
+For example:
+
+```text
+Normal EC2 spend: $20/day
+Today:             $35/day
 ```
 
-When the Spark session starts and execution logs begin to appear, you can explore the Spark UI and driver logs to debug and troubleshoot your Spark program.
-![blog1](/images/3-Blog/BDB-5127-UI-Driver-4.png)
-The following screenshot shows an example of the Spark user interface.
-![blog1](/images/3-Blog/BDB-5127-SparkUI-5.png)
-The following screenshot shows an example of driver logs.
-![blog1](/images/3-Blog/BDB-5127-Spark-Driver-6.png)
-The following screenshot shows the Executors tab, providing access to driver and executor logs.
-![blog1](/images/3-Blog/BDB-5127-Executors-7.png)
+Your monthly budget may still be below its threshold, but a sudden 75% increase could deserve attention.
 
-7. Use the following code to read additional TPC-DS datasets. You can create temporary views and use the Spark UI to view the files being read. Refer to the appendix at the end of this article for details on how to use TPC-DS datasets in your buckets.
-```python
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/item/").createOrReplaceTempView("item")
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/store_sales/").createOrReplaceTempView("store_sales")
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/date_dim/").createOrReplaceTempView("date_dim")
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/customer/").createOrReplaceTempView("customer")
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/catalog_sales/").createOrReplaceTempView("catalog_sales")
-spark.read.parquet("s3://blogpost-sparkoneks-us-east-1/blog/BLOG_TPCDS-TEST-3T-partitioned/web_sales/").createOrReplaceTempView("web_sales")
+Cost Anomaly Detection uses machine learning to account for normal trends and seasonality, so it can look for abnormal behavior rather than only comparing spending to a fixed budget.
 
+A simple mental model:
+
+```text
+AWS Budgets
+-> "Did I cross a limit I defined?"
+
+Cost Anomaly Detection
+-> "Does my spending pattern look unusual?"
 ```
-In each notebook cell, you can open Spark Job Progress to view the stages of jobs sent to EMR Serverless for a specific cell. You can see the completion time for each stage. If errors occur, you can check the logs, making troubleshooting more seamless.
-![blog1](/images/3-Blog/BDB-5127-Spark-Job-Progress-8.png)
-Since the files are partitioned based on date key columns, you can observe that Spark runs tasks in parallel to read the data.
-![blog1](/images/3-Blog/BDB-5127-SparkJobs-9.png)
-8. Next, get counts by date keys on data partitioned by time key using the following code:
-```python
-select count(1), ss_sold_date_sk from store_sales group by ss_sold_date_sk order by ss_sold_date_sk
-```
-![blog1](/images/3-Blog/BDB-5127-Notebook-Block-10.png)
-
-## Monitoring jobs in Spark UI
-
-In the **Jobs** tab of the Spark UI, you can view a list of completed or running jobs, with the following information:
-
-- Action that triggered the job
-- Execution time (e.g., 41 seconds, but times will vary)
-- Number of stages and tasks — in this example, 2 stages and 3,428 tasks
-
-You can select a job to see more details, especially about the stages. Our job has two stages; a new stage is created each time there is a shuffle. We have one stage to read data from each initial dataset, and one stage for aggregation.
-![blog1](/images/3-Blog/BDB-5127-JobRun-11.gif)
-In the next example, we run some TPC-DS SQL queries used for performance evaluation and benchmarking:
-```sql
-with frequent_ss_items as
- (select substr(i_item_desc,1,30) itemdesc,i_item_sk item_sk,d_date solddate,count(*) cnt
-  from store_sales, date_dim, item
-  where ss_sold_date_sk = d_date_sk
-    and ss_item_sk = i_item_sk
-    and d_year in (2000, 2000+1, 2000+2,2000+3)
-  group by substr(i_item_desc,1,30),i_item_sk,d_date
-  having count(*) >4),
- max_store_sales as
- (select max(csales) tpcds_cmax
-  from (select c_customer_sk,sum(ss_quantity*ss_sales_price) csales
-        from store_sales, customer, date_dim
-        where ss_customer_sk = c_customer_sk
-         and ss_sold_date_sk = d_date_sk
-         and d_year in (2000, 2000+1, 2000+2,2000+3)
-        group by c_customer_sk) x),
- best_ss_customer as
- (select c_customer_sk,sum(ss_quantity*ss_sales_price) ssales
-  from store_sales, customer
-  where ss_customer_sk = c_customer_sk
-  group by c_customer_sk
-  having sum(ss_quantity*ss_sales_price) > (95/100.0) *
-    (select * from max_store_sales))
- select sum(sales)
- from (select cs_quantity*cs_list_price sales
-       from catalog_sales, date_dim
-       where d_year = 2000
-         and d_moy = 2
-         and cs_sold_date_sk = d_date_sk
-         and cs_item_sk in (select item_sk from frequent_ss_items)
-         and cs_bill_customer_sk in (select c_customer_sk from best_ss_customer)
-      union all
-      (select ws_quantity*ws_list_price sales
-       from web_sales, date_dim
-       where d_year = 2000
-         and d_moy = 2
-         and ws_sold_date_sk = d_date_sk
-         and ws_item_sk in (select item_sk from frequent_ss_items)
-         and ws_bill_customer_sk in (select c_customer_sk from best_ss_customer))) x
-```
-You can monitor Spark jobs in SageMaker Unified Studio in two ways. Jupyter notebooks provide basic monitoring, showing real-time job status and execution progress. For more detailed analysis, use the Spark UI. You can check specific stages, tasks, and execution plans. The Spark UI is particularly useful for troubleshooting performance issues and optimizing queries. You can track the expected number of stages, running tasks, and detailed duration of each task. This comprehensive view helps you understand resource usage and track job progress at a detailed level.
-
-![blog1](/images/3-Blog/BDB-5127-Spark-TPCDS-12.gif)
-In this section, we explained how you can use EMR Serverless compute in SageMaker Unified Studio to build interactive Spark applications. Through the Spark UI, interactive applications provide detailed task-level status, I/O and shuffle information, as well as links to corresponding task logs directly from the notebook, enabling a seamless debugging experience.
 
 ---
 
-## Cleanup
+## 2. How it works
 
-To avoid ongoing charges in your AWS account, delete the resources you created in this tutorial:
+```text
+AWS Cost & Usage Data
+        |
+        v
+Cost Anomaly Monitor
+        |
+        v
+Machine Learning detects unusual spend
+        |
+        v
+Alert Subscription
+        |
+        +--> Email
+        +--> Amazon SNS
+        |
+        v
+Investigate with Amazon Q
+```
 
-1. Delete connections
-2. Delete EMR jobs
-3. Delete EMR output S3 buckets
-4. Delete Amazon MWAA resources such as workflows and environments
+There are two main objects.
+
+### Cost Monitor
+
+Defines what you want to monitor, for example:
+
+- AWS services;
+- a linked account;
+- a cost allocation tag;
+- a cost category.
+
+### Alert Subscription
+
+Defines which anomalies trigger notifications, who receives them, and how often notifications are sent.
+
+Thresholds help avoid noise from tiny changes.
+
+---
+
+## 3. New capability: Investigate with Amazon Q
+
+Historically, investigating a cost spike could require several tools:
+
+- Cost Explorer;
+- Cost and Usage Report;
+- CloudTrail;
+- CloudWatch;
+- IAM;
+- conversations with the engineering team.
+
+AI-powered cost investigation attempts to connect those pieces.
+
+For an anomaly, Amazon Q can help answer:
+
+1. **What changed?**
+2. **When did it change?**
+3. **Where did it change?**
+4. **Who or what triggered it?**
+5. **Why did it happen?**
+
+AWS distinguishes two broad types of cost change.
+
+### Usage-driven
+
+More resources or activity are consumed.
+
+Examples:
+
+- an RDS cluster is scaled up;
+- more EC2 instances are launched;
+- request volume increases;
+- a load test is left running.
+
+### Rate-driven
+
+Usage remains similar while the effective price changes.
+
+This can be related to factors such as Savings Plans allocation, tiered pricing, or discount changes.
+
+---
+
+## 4. Practical scenario
+
+Assume a development environment normally costs:
+
+```text
+EC2 + RDS = about $15/day
+```
+
+Cost Anomaly Detection reports:
+
+```text
+Estimated impact: +$40
+Primary service: Amazon RDS
+Region: us-east-1
+```
+
+You open the anomaly and choose:
+
+```text
+Investigate with Amazon Q
+```
+
+When relevant CloudTrail data is available, the investigation may help connect the increase to a resource change, the approximate time, an API call, or an IAM principal.
+
+You can then ask follow-up questions such as:
+
+```text
+Is this increase concentrated in one account?
+How does this compare with the last 30 days?
+Which Region contributed the most?
+```
+
+The goal is to shorten root-cause analysis, not merely provide a chat interface for billing data.
+
+---
+
+## 5. Set up Cost Anomaly Detection
+
+### Step 1: Open the service
+
+```text
+Billing and Cost Management
+-> Cost Anomaly Detection
+```
+
+### Step 2: Create a Cost Monitor
+
+```text
+Cost monitors
+-> Create monitor
+```
+
+For a learning account, an AWS-managed services monitor is an easy starting point.
+
+### Step 3: Create an Alert Subscription
+
+Example:
+
+```text
+Subscription name: dev-cost-alert
+Threshold: $5 or $10 for a small lab
+Frequency: Daily / Weekly / Individual
+Recipient: email or SNS depending on the alert type
+```
+
+For production, thresholds should reflect normal spend so the team does not suffer from alert fatigue.
+
+### Step 4: Allow time for billing data
+
+Cost Anomaly Detection is **not second-by-second real-time monitoring**.
+
+AWS cost tools depend on processed billing data, which can be delayed. A newly created monitor also needs time before it begins detecting anomalies.
+
+Use this service for cost anomalies; use CloudWatch and service-specific monitoring for operational incidents that require immediate reactions.
+
+---
+
+## 6. Investigate with Amazon Q
+
+When an anomaly is available:
+
+```text
+Detected anomalies
+-> Select an anomaly
+-> Investigate with Amazon Q
+```
+
+Review the evidence shown in the investigation:
+
+- service;
+- account;
+- Region;
+- usage type;
+- time;
+- CloudTrail event when available;
+- IAM principal when available.
+
+A useful principle is:
+
+> Use AI to accelerate investigation, not to skip verification.
+
+---
+
+## 7. Cross-account investigation
+
+In AWS Organizations, billing can be aggregated in the management account while the API activity happened in a member account.
+
+For deeper cross-account analysis, Amazon Q can use an **organization-wide CloudTrail trail** delivered to CloudWatch Logs.
+
+```text
+Member Accounts
+      |
+      v
+Organization CloudTrail
+      |
+      v
+CloudWatch Logs
+      |
+      v
+Amazon Q Cost Investigation
+```
+
+Without sufficient CloudTrail data, the system can still explain cost changes but may not be able to identify the exact actor or API call.
+
+---
+
+## 8. Cost considerations
+
+AWS states that AI-powered cost investigation is available **at no additional charge** for Cost Anomaly Detection customers.
+
+However, cross-account investigations can query CloudWatch Logs Insights over CloudTrail logs, and those queries may incur normal Logs Insights scan charges.
+
+This is a useful reminder that “no additional charge” for a feature does not always mean every dependent service is free.
+
+---
+
+## 9. How the tools fit together
+
+A simple cost-management stack can be:
+
+```text
+AWS Budgets
+-> budget thresholds
+
+Cost Anomaly Detection
+-> unusual spending patterns
+
+Cost Explorer
+-> cost trends and breakdown
+
+CloudTrail
+-> API activity
+
+Amazon Q
+-> faster root-cause investigation
+```
+
+Each tool answers a different question.
+
+---
+
+## 10. Common mistakes
+
+### Thresholds are too low
+
+The team receives too many alerts and eventually ignores them.
+
+### Alerts exist but no response process exists
+
+A useful alert should have an owner and a response playbook.
+
+### Treating anomaly detection as real time
+
+Billing data has latency. Technical incidents still require normal observability.
+
+### Poor tagging
+
+If all workloads are mixed together, “EC2 increased by $100” does not tell you which project owns the cost.
+
+Good tags such as `Project`, `Environment`, and `Owner` make cost investigation much more useful.
+
+---
+
+## 11. Suggested checklist for a learning account
+
+1. Create a monthly AWS Budget.
+2. Enable Cost Anomaly Detection for AWS services.
+3. Use a threshold appropriate for your small account.
+4. Configure email or SNS alerts.
+5. Keep CloudTrail available for auditing.
+6. Tag resources with `Project`, `Environment`, and `Owner`.
+7. Review Cost Explorer when an anomaly appears.
+8. If Amazon Q Developer access is available, try `Investigate with Amazon Q`.
+9. Verify the root cause using CloudTrail and resource state.
+10. Fix the resource and document the lesson.
+
+---
+
+## References
+
+- AWS Blog: [Introducing AI-Powered Cost Investigations For Cost Anomalies](https://aws.amazon.com/blogs/aws-cloud-financial-management/introducing-ai-powered-cost-investigations-for-cost-anomalies/)
+- AWS: [AWS Cost Anomaly Detection](https://aws.amazon.com/aws-cost-management/aws-cost-anomaly-detection/)
+- AWS Documentation: [Getting started with AWS Cost Anomaly Detection](https://docs.aws.amazon.com/cost-management/latest/userguide/getting-started-ad.html)
+- AWS Documentation: [Detecting unusual spend with AWS Cost Anomaly Detection](https://docs.aws.amazon.com/cost-management/latest/userguide/manage-ad.html)
+- AWS Documentation: [Investigating anomaly root causes with Amazon Q Developer](https://docs.aws.amazon.com/cost-management/latest/userguide/investigating-ad.html)
 
 ---
 
 ## Conclusion
 
-In this post, we demonstrated how the next generation of SageMaker, combined with EMR Serverless, provides a powerful solution for developing, monitoring, and scheduling Spark applications using data in Amazon S3. The integrated experience significantly reduces complexity by providing a unified development environment, automatic resource management, and comprehensive monitoring capabilities through the Spark UI, while maintaining cost efficiency with the pay-as-you-use model. For enterprises, this means faster time to insights, improved team collaboration, and reduced operational overhead, allowing data teams to focus on analytics rather than infrastructure management.
+Cloud cost is not dangerous only because it is high. It is dangerous when it **changes unexpectedly and nobody knows why**.
 
-To get started, explore the [Amazon SageMaker Unified Studio User Guide](https://docs.aws.amazon.com/sagemaker-unified-studio/latest/userguide/what-is-sagemaker-unified-studio.html), set up a project in your AWS environment, and discover how this solution can transform your organization's data analytics capabilities.
+Cost Anomaly Detection helps identify the change, while Amazon Q cost investigation can shorten the path from “which service increased?” to “which account, resource change, or activity likely caused it?”
 
----
-
-## Appendix
-In the following sections, we discuss how to run scheduled workloads and provide details about the TPC-DS dataset for building Spark applications using EMR Serverless.
-
-### Running scheduled workloads
-
-In this section, we deploy JupyterLab notebooks and create workflows using Amazon MWAA. You can use workflows to orchestrate notebooks, querybooks, and many other things in your project repository. With workflows, you can define a set of tasks organized as a directed acyclic graph (DAG) that can run on a schedule you define. Implementation steps:
-
-1. In SageMaker Unified Studio, choose **Build**, and under **Orchestration**, choose **Workflows**
-![blog1](/images/3-Blog/BDB-5127-Workflow-13.png)
-2. Choose **Create Workflow in Editor**
-You will be directed to the JupyterLab notebook with a new DAG named `untitled.py` created in the `/src/workflows/dag` folder
-3. Rename this notebook to `tpcds_data_queries.py`
-
-4. You can reuse the existing template with the following updates:
-
-a. Update line 17 with the schedule you want your code to run on
-b. Update line 26 with your NOTEBOOK_PATH. This path should be in `src/<notebook_name>.ipynb`. Note that the dag_id name is auto-generated; you can name it as per your requirement.
-![blog1](/images/3-Blog/BDB-5127-Spark-TPCDS-DagNotebk-14.jpg)
-5. Choose **File** and **Save notebook**
-To test, you can trigger a manual workload run
-6. In SageMaker Unified Studio, choose **Build**, then under **Orchestration**, choose **Workflows**.
-7. Choose your workflow, then choose **Run**.
-You can monitor job success on the Runs tab.
-![blog1](/images/3-Blog/BDB-5127-AirflowRun-15.png)
-To debug notebook jobs by accessing the Spark UI in the Airflow job console, you must use [EMR Serverless Airflow Operators](https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/using-airflow.html) to submit jobs. The link is available on the **Details** tab of the query.
-This option has key limitations: it is not available for Amazon EMR on EC2, and SageMaker notebook job operators do not work.
-
-You can configure the operator to create one-time links to the application UI and Spark output logs by passing `enable_application_ui_links=True` as a parameter. After the job starts running, these links are available on the Details tab of the corresponding task. If `enable_application_ui_links=False`, the links will appear but in a grayed-out state.
-
-Make sure you have `emr-serverless:GetDashboardForJobRun` in [AWS Identity and Access Management](https://aws.amazon.com/iam/) (IAM) to create dashboard links.
-
-Open the Airflow user interface for your task. The Spark user interface and history server dashboard options will appear on the Details tab, as shown in the following screenshot.
-
-![blog1](/images/3-Blog/BDB-5127-AirflowUI-16.jpeg)
-
-The screenshot illustrates the Jobs tab of the Spark UI.
-
-![blog1](/images/3-Blog/BDB-5127-Airflow-SparkUI-17.jpeg)
----
-
-## About the authors
-
-<div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
-  <img src="/images/3-Blog/Amit-Maindola.jpg" alt="Amit Maindola" style="width: 150px; height: 150px; object-fit: cover; margin-right: 20px; border-radius: 8px;">
-  <div>
-    <p><strong>Amit Maindola</strong> is a Senior Data Architect focused on data engineering, analytics, and AI/ML at Amazon Web Services. He helps customers in their digital transformation journey and enables them to build highly scalable, robust, and secure cloud-based analytical solutions on AWS to gain timely insights and make critical business decisions.</p>
-  </div>
-</div>
-
-<div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
-  <img src="/images/3-Blog/image045.jpg" alt="Abhilash Nagilla" style="width: 150px; height: 150px; object-fit: cover; margin-right: 20px; border-radius: 8px;">
-  <div>
-    <p><strong>Abhilash Nagilla</strong> is a senior specialist solutions architect at Amazon Web Services (AWS), supporting public sector customers on their cloud journey with a focus on AWS data and AI services. Outside of work, Abhilash enjoys learning new technologies, watching movies, and traveling to new places.</p>
-  </div>
-</div>
+The main takeaway is simple: **do not wait until the end-of-month bill to start thinking about cost. Treat cost monitoring as part of observability from day one.**

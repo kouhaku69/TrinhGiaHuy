@@ -1,95 +1,73 @@
 ---
 title: "Event 1"
-date: "2025-11-15"
+date: 2026-05-30
 weight: 1
 chapter: false
-pre: " <b> 4.1. </b> "
+pre: "<b> 4.1. </b>"
 ---
 
-
-# Summary Report: “AI/ML/GenAI on AWS”
+# Summary Report: "First Cloud AI Journey Community Meetup - AWS Skills, Mindset, Hackathon, and DevOps"
 
 ### Event Objectives
 
-- Provide an overview of the AI/ML/GenAI ecosystem on AWS
-- Guide participants through the full ML lifecycle using Amazon SageMaker
-- Explain and demo Foundation Models on Amazon Bedrock
-- Present Prompt Engineering, RAG, and Bedrock Agents techniques
-- Build a GenAI chatbot through a live demo
+- Expand practical AWS knowledge through Cloud Quest and Floci
+- Understand how procrastination, fear, and lack of confidence affect learning and work
+- Learn from hackathon experiences and product development under time constraints
+- Identify hidden project issues and understand the role of DevOps thinking
 
-### Agenda-based Highlights
+### Main Content
 
-#### 8:30 – 9:00 AM | Welcome & Introduction
-**Main activities:**
-- Participant check-in and networking
-- Workshop learning objectives
-- Ice-breaker activity
-- Overview of the AI/ML landscape in Vietnam
+#### 1. Level Up Your AWS Skills with Cloud Quest and Floci
 
-**Key takeaway:**
-Gained a clearer view of AI/ML trends in Vietnamese enterprises and how AWS supports digital transformation with GenAI and ML.
+This session introduced a three-stage, hands-on AWS learning path. AWS Cloud Quest helps beginners become familiar with AWS services and architecture through game-based missions. Floci allows users to simulate many AWS services locally, enabling rapid experimentation without incurring cloud costs. However, Floci has limitations and cannot fully replace testing in a real AWS environment.
 
-#### 9:00 – 10:30 AM | AWS AI/ML Services Overview
-**Main content:**
-- Introduction to Amazon SageMaker as an end-to-end ML platform
-- Data preparation and labeling
-- Model training, tuning, and deployment
-- Integrated MLOps in SageMaker
-- Live Demo: SageMaker Studio walkthrough
+**Key takeaway:** Cloud Quest can be used to develop architectural thinking, Floci for rapid local development and testing, and a real AWS environment for validation under production conditions.
 
-**Key takeaway:**
-Understood the full ML development lifecycle on AWS, how to prepare data, monitor training/tuning/deployment, grasped real-world MLOps, and experienced SageMaker Studio and workflow hands-on.
+#### 2. The Iceberg of Procrastination
 
-#### 10:30 – 10:45 AM | Coffee Break
-Short networking and discussion break with AWS experts and other participants.
+Procrastination often appears on the surface as scrolling through social media, avoiding tasks, or waiting until the last minute. Underneath it may be a fear of not being good enough, being judged, or failing. The session recommended naming the fear clearly and beginning with one small five-minute action instead of waiting for motivation or confidence.
 
-#### 10:45 AM – 12:00 PM | Generative AI with Amazon Bedrock
-**Main content:**
-- Foundation Models: Claude, Llama, Titan — comparison & selection guide
-- Prompt Engineering: Techniques, Chain-of-Thought reasoning, Few-shot learning
-- RAG (Retrieval-Augmented Generation): Architecture, Knowledge Base integration
-- Bedrock Agents: Multi-step workflows, tool integrations
-- Guardrails: Safety, content filtering
-- Live Demo: Building a GenAI chatbot with Amazon Bedrock
+**Key takeaway:** Action builds confidence. When facing a difficult task, the first step should be small enough to begin immediately.
 
-**Key takeaway:**
-Learned how to select the right Foundation Model, master prompt engineering (CoT, few-shot), build a complete RAG system, use Bedrock Agents for multi-step workflows, understand content safety standards and Guardrails, and follow the full GenAI chatbot creation process.
+#### 3. Why We Always Need Confidence
 
-### Key Takeaways
+A lack of confidence can cause students to miss opportunities, hide their abilities, and struggle to present ideas. Confidence is not ego or perfection; it is the ability to act even while feeling nervous. Suggested practices included preparing carefully, acknowledging small achievements, and using the five-second rule to overcome hesitation.
 
-- Comprehensive understanding of ML and GenAI on AWS
-- Understood the differences and use cases for FM models (Claude/Llama/Titan)
-- Applied Chain-of-Thought and Few-shot to improve output quality
-- Learned to design prompts for complex pipelines
-- Understood why RAG is needed in enterprise apps and how to connect Bedrock to Knowledge Base
-- Learned to build agents with tool integration
-- Hands-on experience with SageMaker Studio and end-to-end ML workflow
-- Understood how to deploy enterprise AI chatbots using AWS standards
+**Key takeaway:** Technical ability is the foundation, while confidence is the bridge that enables communication, collaboration, and responsibility for one's decisions.
 
-### Applying to Work
+#### 4. The Ballers - Hackathon: More Like “HA! A Tons of Fun”
 
-- Apply RAG to internal chatbots or document support systems
-- Use SageMaker to train/fine-tune ML models
-- Use Prompt Engineering to improve FM output quality
-- Integrate Bedrock Agents to automate workflows
-- Build GenAI demos for team/project
+The Ballers shared their experience in a 36-hour hackathon. Their two main projects were SynthHunter, a system for verifying AI-generated voices, and Vortex, a workflow supporting candidates from CV screening to interviews. The team faced challenges involving ideation, time, processing speed, resources, and pitch preparation. Both projects ultimately reached the Top 10 in the AWS Track.
 
-### Event Experience
+**Key takeaway:** Hackathons turn knowledge into products, strengthen portfolios, and develop teamwork. A strong idea should begin with a real pain point, be tested continuously, and remain within a scope that can be demonstrated.
 
-Attending “AI/ML/GenAI on AWS” was an extremely valuable experience, deepening my understanding of how enterprises implement AI/ML and GenAI in practice.
+#### 5. The Hidden Iceberg of a Project: DevOps Before Disaster
 
-#### Highlights
-- Learning from AWS experts: Clear analysis of the AI/ML roadmap for Vietnamese enterprises, real-world demos of SageMaker and Bedrock.
-- Hands-on demo sessions: Directly observed the train → tune → deploy process, Bedrock chatbot demo clarified the GenAI app building workflow.
-- Networking & Discussions: Opportunities to discuss with AWS engineers and other participants, learn from real GenAI case studies.
-- Lessons learned: GenAI is not just a model but a complete workflow (Prompt → RAG → Agents → Guardrails), SageMaker standardizes the ML lifecycle, and model selection is crucial for efficiency and cost.
+Visible project problems such as missed deadlines, production errors, failed deployments, and burnout are only the tip of the iceberg. Deeper causes often include unclear requirements, communication gaps, siloed teams, weak ownership, manual processes, and slow feedback loops. DevOps should be understood as the integration of people, processes, and technology—not merely Docker, Kubernetes, or CI/CD.
 
-#### Some event photos
-![Event photo](/images/4-EventParticipated/even1.1.jpg)
-![Event photo](/images/4-EventParticipated/even1.2.jpg)
-![Event photo](/images/4-EventParticipated/even1.3.jpg)
-![Event photo](/images/4-EventParticipated/even1.4.jpg)
-![Event photo](/images/4-EventParticipated/even1.5.jpg)
-![Event photo](/images/4-EventParticipated/even1.6.jpg)
+**Key takeaway:** Collaboration, shared ownership, automation, monitoring, and continuous improvement help teams address root causes, detect problems early, and prevent recurring incidents.
 
-> Overall, the event not only provided technical knowledge but also helped me reshape my thinking about AI/ML application, system modernization, and more effective cross-team collaboration.
+### Key Lessons Learned
+
+- Combine guided learning environments, local testing tools, and real AWS resources to study cloud technologies more effectively
+- Do not wait until you feel completely confident; begin with one small action and improve through each attempt
+- In a hackathon, select a clear pain point, control the scope, and protect the most important demo flow
+- DevOps is a culture of collaboration and shared responsibility in which tools play a supporting role
+- Rapid feedback, automation, and retrospectives help teams learn from mistakes before they become major incidents
+
+### Application to Study and Work
+
+- Practice AWS architecture through Cloud Quest, then use Floci to test code before deploying it to AWS
+- Apply the five-minute or five-second rule when beginning a difficult task, giving a presentation, or sharing an idea
+- In group projects, define the problem, roles, MVP scope, and demo criteria from the beginning
+- Add CI/CD, Infrastructure as Code, monitoring, and retrospectives to suitable AWS projects
+
+### Personal Contribution
+
+As an attendee, I actively followed the presentations, recorded the technical content, and connected it with my own AWS learning journey. I also consolidated the shared lessons on action, confidence, teamwork, scope management, and DevOps thinking so that they can be applied to future projects.
+
+### Event Photos
+![Event photo](/images/4-EventParticipated/event1.1.jpg)
+![Event photo](/images/4-EventParticipated/event1.2.jpg)
+
+> Overall, the event effectively combined AWS knowledge, product development skills, and personal mindset. Its greatest value was helping me understand that sustainable progress requires technical ability, decisive action, collaboration, and continuous feedback processes.

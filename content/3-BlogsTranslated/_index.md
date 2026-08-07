@@ -1,26 +1,18 @@
 ---
-title: "Translated Blogs"
-date: "2025-09-09"
+title: "Blogs Posted"
+date: "2026-07-31"
 weight: 3
 chapter: false
 pre: " <b> 3. </b> "
 ---
 
-This section will list and introduce the blogs you have translated. For example:
+This section lists and introduces the blog posts that you have translated. For example:
 
-###  [Blog 1 - Develop and monitor a Spark application using existing data in Amazon S3 with Amazon SageMaker Unified Studio](3.1-Blog1/)
-This blog explains how to develop and monitor Spark applications in the integrated environment of Amazon SageMaker Unified Studio. You will learn how to address challenges in managing big data analytics, such as fragmented development environments, complex resource management, and inconsistent monitoring. The article details how to set up Serverless EMR, develop Spark applications with the TPC-DS dataset in Jupyter notebooks, monitor performance using the Spark UI, and automate workflows with Amazon MWAA. This unified solution helps data teams focus on analytics instead of managing infrastructure.
-###  [Blog 2 -Democratize data for timely decisions with text-to-SQL at Parcel Perform](3.2-Blog2/)
-This blog explains how Parcel Perform uses generative AI and modern architecture to help operations teams query data quickly without relying on technical teams. It covers how to build a data lake to process billions of shipping event records per day, and how to use text-to-SQL and RAG workflows to automatically translate user questions into precise SQL queries.
+### [Blog 1 - AWS Cost Anomaly Detection: Detect Anomalous Charges and Identify Root Causes with Amazon Q](3.1-Blog1/)
+This blog explains how to use AWS Cost Anomaly Detection to identify unusual spending patterns and the AI-powered cost investigation capability in Amazon Q to help determine the root cause. It covers Cost Monitors, Alert Subscriptions, Cost Explorer, CloudTrail, cross-account investigations, and important considerations related to billing latency and CloudWatch Logs Insights costs.
 
-###  [Blog 3 -Build a scalable AI video generator using Amazon SageMaker AI and CogVideoX](3.3-Blog3/)
-This blog introduces how to build a scalable AI video generation system using Amazon SageMaker AI and the CogVideoX model. The solution transforms text and images into high-quality videos for a variety of purposes such as marketing, education, and product demonstrations, while leveraging AWS services for performance, security, and scalability.
+### [Blog 2 - Automatically Start and Stop EC2 Instances with Amazon EventBridge Scheduler Without Writing Lambda Functions](3.2-Blog2/)
+This blog explains how to use Amazon EventBridge Scheduler to automatically start EC2 instances at the beginning of the workday and stop them at the end of the day. It focuses on cron schedules, the Asia/Ho_Chi_Minh time zone, universal targets, least-privilege IAM execution roles, retry and dead-letter queue configurations, and ways to reduce idle compute costs in development and test environments.
 
-###  [Blog 4 - ...](3.4-Blog4/)
-This blog introduces how to start building a data lake in the healthcare sector by applying a microservices architecture. You will learn why data lakes are important for storing and analyzing diverse healthcare data (electronic medical records, lab test data, medical IoT devices…), how microservices help make the system more flexible, scalable, and easier to maintain. The article also guides you through the steps to set up the environment, organize the data processing pipeline, and ensure compliance with security & privacy standards such as HIPAA.
-
-###  [Blog 5 - ...](3.5-Blog5/)
-This blog introduces how to start building a data lake in the healthcare sector by applying a microservices architecture. You will learn why data lakes are important for storing and analyzing diverse healthcare data (electronic medical records, lab test data, medical IoT devices…), how microservices help make the system more flexible, scalable, and easier to maintain. The article also guides you through the steps to set up the environment, organize the data processing pipeline, and ensure compliance with security & privacy standards such as HIPAA.
-
-###  [Blog 6 - ...](3.6-Blog6/)
-This blog introduces how to start building a data lake in the healthcare sector by applying a microservices architecture. You will learn why data lakes are important for storing and analyzing diverse healthcare data (electronic medical records, lab test data, medical IoT devices…), how microservices help make the system more flexible, scalable, and easier to maintain. The article also guides you through the steps to set up the environment, organize the data processing pipeline, and ensure compliance with security & privacy standards such as HIPAA.
+### [Blog 3 - Amazon S3 Lifecycle: Automatically Reduce Storage Costs Without Manual Management](3.3-Blog3/)
+This blog explains how to use Amazon S3 Lifecycle to automatically transition older data to a more cost-effective storage class or delete it after its retention period expires. This is a simple way to reduce Amazon S3 costs without manually managing individual files.

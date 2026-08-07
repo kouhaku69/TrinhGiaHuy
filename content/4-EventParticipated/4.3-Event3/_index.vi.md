@@ -1,137 +1,105 @@
 ---
-title: "Sự kiện 3"
-date: 2025-11-29
+title: "Event 3"
+date: 2026-06-13
 weight: 3
 chapter: false
-pre: "<b>4.3 </b>"
+pre: "<b> 4.3. </b>"
 ---
 
-# Báo Cáo Tóm Tắt: "AWS Cloud Mastery Series #3 - Well-Architected Security Pillar"
+# Báo cáo tổng kết: "First Cloud Journey Meetup - Career, DevOps và AWS Architecture"
 
-### Mục Tiêu Sự Kiện
-- Nắm vững 5 trụ cột cốt lõi của AWS Well-Architected Security Framework
-- Hiểu các mối đe dọa bảo mật hiện đại và best practices trong môi trường cloud
-- Học cách triển khai bảo mật toàn diện từ quản lý danh tính đến ứng phó sự cố
-- Áp dụng các nguyên tắc bảo mật trong các tình huống doanh nghiệp thực tế
+### Mục tiêu sự kiện
 
-### Chương Trình & Điểm Nổi Bật
+- Tiếp cận kinh nghiệm thực tế về nghề nghiệp và văn hóa làm việc trong doanh nghiệp công nghệ
+- Hiểu rõ hơn vai trò, nền tảng kiến thức và tư duy của một DevOps Engineer
+- Tìm hiểu lộ trình phát triển từ cộng đồng First Cloud Journey đến môi trường AWS Partner
+- Khám phá kiến trúc dịch vụ rút gọn URL có khả năng mở rộng trên AWS
 
-#### 8:30 – 8:50 | Opening & Security Foundation
+### Nội dung chính theo từng phiên
+
+#### Phiên 1 | Câu chuyện thực tế đến văn hóa tại tập đoàn đa quốc gia
+
 **Nội dung chính:**
-- Vai trò Security Pillar trong Well-Architected Framework
-- Nguyên tắc cốt lõi: Least Privilege – Zero Trust – Defense in Depth
-- Hiểu về Shared Responsibility Model
-- Top threats trong môi trường cloud tại Việt Nam
+
+- Chia sẻ công việc thực tế của Data Analytics Engineer trong doanh nghiệp: xây dựng báo cáo, thiết kế dashboard, phân tích nguyên nhân và hỗ trợ ra quyết định
+- Nhấn mạnh bốn năng lực quan trọng gồm tư duy phản biện, giao tiếp, kể chuyện bằng dữ liệu và giải quyết vấn đề
+- Giới thiệu lộ trình phát triển từ Follower, Learner, Problem Solver đến System Thinker và người dẫn dắt
+- Trình bày quy trình tuyển dụng phổ biến tại tập đoàn đa quốc gia: sàng lọc, kiểm tra năng lực, phỏng vấn chuyên môn và đánh giá mức độ phù hợp văn hóa
+- Chia sẻ các giá trị như No-Blame Post-Mortem, môi trường Caring & Inclusive và tư duy làm việc theo tiêu chuẩn toàn cầu
 
 **Điểm rút ra:**
-Có được nền tảng hiểu biết về triết lý bảo mật AWS và cách shared responsibility model áp dụng cho các tầng dịch vụ khác nhau. Học về landscape bảo mật hiện tại và các lỗ hổng phổ biến trong môi trường cloud Việt Nam.
 
-#### 8:50 – 9:30 | Pillar 1 — Identity & Access Management
+Em hiểu rằng năng lực phân tích không chỉ nằm ở việc tạo báo cáo mà còn ở khả năng tìm nguyên nhân, truyền đạt insight và đề xuất giải pháp. Để phát triển lâu dài, người làm công nghệ cần chuyển từ tư duy hoàn thành nhiệm vụ sang tư duy giải quyết vấn đề và tối ưu hệ thống.
+
+#### Phiên 2 | What Does a DevOps Engineer Really Do?
+
 **Nội dung chính:**
-- Modern IAM Architecture: Users, Roles, Policies best practices
-- Tránh long-term credentials và triển khai temporary access
-- IAM Identity Center: SSO implementation và permission sets
-- SCP & permission boundaries cho multi-account governance
-- MFA implementation, credential rotation strategies, Access Analyzer utilization
-- Mini Demo: IAM Policy validation và access simulation
+
+- Làm rõ những hiểu lầm phổ biến khi xem DevOps chỉ là CI/CD, Docker, Kubernetes, cloud hoặc xử lý sự cố production
+- Giải thích phạm vi công việc DevOps thay đổi theo quy mô công ty, sản phẩm, cấu trúc nhóm và mức độ trưởng thành của hạ tầng
+- Đề xuất học nền tảng trước: Linux, networking, Python hoặc Golang, Git, CI/CD và containers
+- Khuyến khích xây dựng dự án nhỏ để thực hành deploy, automation, monitoring, troubleshooting và khôi phục hệ thống
+- Nhấn mạnh việc hiểu bản chất thay vì sao chép câu lệnh, xác định đúng chủ sở hữu vấn đề, đặt câu hỏi “vì sao” và giao tiếp rõ ràng
 
 **Điểm rút ra:**
-Thành thạo các pattern IAM hiện đại, hiểu tầm quan trọng của việc loại bỏ long-term credentials, và có kinh nghiệm thực hành với policy validation tools. Học các chiến lược governance bảo mật multi-account.
 
-#### 9:30 – 9:55 | Pillar 2 — Detection & Continuous Monitoring
+Em nhận thấy DevOps không phải một danh sách công cụ cố định mà là cách tư duy hệ thống và hỗ trợ đội ngũ đưa phần mềm vào vận hành ổn định. Công cụ có thể thay đổi, nhưng kiến thức nền tảng, khả năng tự học, automation và communication vẫn là những năng lực cốt lõi.
+
+#### Phiên 3 | From First Cloud AI Journey to AWS Partner
+
 **Nội dung chính:**
-- CloudTrail organization-level logging và quản lý
-- GuardDuty threat detection và Security Hub centralization
-- Logging toàn diện: VPC Flow Logs, ALB logs, S3 access logs
-- Alerting và automation với EventBridge integration
-- Detection-as-Code approach cho infrastructure và security rules
+
+- Chia sẻ lộ trình từ sự tò mò của sinh viên đến First Cloud Journey, workshop cộng đồng, hands-on labs và các dự án tại trường
+- Nhấn mạnh vai trò của portfolio trong việc thể hiện năng lực và kết nối kiến thức với bài toán thực tế
+- Giới thiệu First Cloud AI Journey Program, AWS Student Builder Group Program và AWS Community Builder Program
+- Chia sẻ cơ hội tham gia sự kiện, xây dựng cộng đồng, nhận badge và phát triển khả năng lãnh đạo
+- Mở rộng định hướng nghề nghiệp tại AWS Partner và tinh thần “share back” để hỗ trợ thế hệ tiếp theo
 
 **Điểm rút ra:**
-Hiểu chiến lược monitoring toàn diện trên tất cả tầng AWS, học cách triển khai automated threat detection và response, và có insight về việc treat security rules như code để governance tốt hơn.
 
-#### 9:55 – 10:10 | Coffee Break
-Networking với các chuyên gia bảo mật và AWS experts.
+Em hiểu rằng một lộ trình cloud hiệu quả cần kết hợp học tập, thực hành, dự án, portfolio và đóng góp cộng đồng. Việc có được một công việc chỉ là bước khởi đầu; giá trị bền vững đến từ khả năng giải quyết bài toán thực tế và chia sẻ kiến thức với người khác.
 
-#### 10:10 – 10:40 | Pillar 3 — Infrastructure Protection
+#### Phiên 4 | A Scalable URL Shortening Service on AWS
+
 **Nội dung chính:**
-- VPC segmentation strategies và network isolation
-- Private vs public subnet placement best practices
-- Security Groups vs NACLs: practical application models
-- WAF + Shield + Network Firewall integration
-- Workload protection: EC2, ECS/EKS security fundamentals
+
+- Giải thích quy trình cơ bản của dịch vụ rút gọn URL và hạn chế của kiến trúc đơn giản khi lưu lượng tăng cao
+- Trình bày frontend với Amazon Route 53, Amazon CloudFront, AWS WAF và AWS Amplify
+- Xây dựng backend bằng Amazon ECS/AWS Fargate, Application Load Balancer, Amazon ElastiCache for Redis và Amazon DynamoDB trong kiến trúc đa Availability Zone
+- Sử dụng Key Generation Service để tạo sẵn short codes và đưa vào Redis queue, giúp yêu cầu tạo URL phản hồi nhanh và giảm nguy cơ trùng mã
+- Áp dụng cache-aside pattern: đọc dữ liệu từ Redis trước, chỉ truy vấn DynamoDB khi cache miss
+- Nhấn mạnh separation of concerns, defense at the edge, pre-computation và tối ưu riêng cho read path và write path
 
 **Điểm rút ra:**
-Thành thạo approach bảo mật network layering, hiểu khi nào sử dụng các network security controls khác nhau, và học workload-specific security implementations cho containers và compute services.
 
-#### 10:40 – 11:10 | Pillar 4 — Data Protection
-**Nội dung chính:**
-- KMS: key policies, grants, và automated rotation
-- Encryption at-rest & in-transit: S3, EBS, RDS, DynamoDB implementation
-- Secrets Manager & Parameter Store rotation patterns
-- Data classification frameworks và access guardrails
+Em hiểu rằng một hệ thống có khả năng mở rộng cần được thiết kế dựa trên đặc điểm lưu lượng. Việc tách luồng đọc và ghi, tạo mã trước, sử dụng cache và đẩy lớp bảo mật ra gần người dùng giúp giảm độ trễ, hạn chế bottleneck và bảo vệ hệ thống lõi tốt hơn.
 
-**Điểm rút ra:**
-Hiểu sâu về AWS encryption services, học các pattern thực tế cho secrets management và rotation, và hiểu cách triển khai data classification và protection strategies trên các service types khác nhau.
+### Bài học rút ra chính
 
-#### 11:10 – 11:40 | Pillar 5 — Incident Response
-**Nội dung chính:**
-- IR lifecycle theo AWS best practices
-- Practical playbooks cho các scenario phổ biến:
-  - Compromised IAM credentials
-  - S3 public exposure incidents
-  - EC2 malware detection và response
-- Snapshot creation, workload isolation, evidence collection procedures
-- Automated response implementation sử dụng Lambda và Step Functions
+- Kiến thức nền tảng và tư duy giải quyết vấn đề có giá trị lâu dài hơn việc chỉ ghi nhớ công cụ
+- Dữ liệu cần được chuyển thành insight và hành động thay vì dừng lại ở báo cáo
+- DevOps là sự kết hợp giữa hệ thống, automation, vận hành và giao tiếp trong nhóm
+- Portfolio và hoạt động cộng đồng giúp biến quá trình học thành năng lực có thể chứng minh
+- Kiến trúc cloud cần cân bằng hiệu năng, khả năng mở rộng, bảo mật, chi phí và khả năng vận hành
 
-**Điểm rút ra:**
-Có được practical incident response skills với AWS-specific tools, học automated response patterns, và hiểu cách implement security orchestration để faster incident resolution.
+### Áp dụng vào học tập và công việc
 
-#### 11:40 – 12:00 | Wrap-Up & Q&A
-**Nội dung chính:**
-- Tổng kết comprehensive review của tất cả 5 security pillars
-- Common pitfalls và real-world challenges trong các doanh nghiệp Việt Nam
-- Security learning roadmap: Security Specialty và Solutions Architect Pro certifications
+- Xây dựng một dự án nhỏ có CI/CD, container, monitoring và tài liệu vận hành
+- Luyện cách trình bày kết quả phân tích dữ liệu theo cấu trúc vấn đề - nguyên nhân - giải pháp
+- Hoàn thiện portfolio với các bài lab AWS và dự án có kiến trúc rõ ràng
+- Thử thiết kế proof of concept cho URL shortener bằng Redis và DynamoDB
+- Chủ động tham gia hoạt động cộng đồng và chia sẻ lại kiến thức đã học
 
-### Điểm Rút Ra Chính
+### Đóng góp cá nhân
 
-- **Comprehensive Security Framework:** Hiểu sâu về tất cả 5 Well-Architected Security Pillars và interconnections của chúng
-- **Modern IAM Practices:** Thành thạo identity và access management với zero-trust principles
-- **Detection & Response:** Implementation của comprehensive monitoring và automated incident response
-- **Infrastructure Security:** Network segmentation và workload protection strategies
-- **Data Protection:** Encryption và secrets management best practices
-- **Practical Application:** Real-world security scenarios và enterprise-specific challenges
+Trong vai trò người tham dự, em chủ động ghi chép và hệ thống hóa nội dung của bốn phiên theo ba nhóm: phát triển nghề nghiệp, tư duy DevOps và thiết kế kiến trúc AWS. Việc liên kết các bài học với kế hoạch học tập giúp em xác định rõ hơn những kỹ năng cần ưu tiên và cách chuyển kiến thức thành dự án thực tế.
 
-### Áp Dụng Vào Công Việc
+### Trải nghiệm sự kiện
 
-- Triển khai comprehensive security assessment sử dụng Well-Architected Security Pillar framework
-- Redesign IAM architecture theo modern best practices và loại bỏ long-term credentials
-- Set up automated threat detection và response sử dụng GuardDuty, Security Hub, và EventBridge
-- Implement network segmentation và workload protection cho infrastructure hiện tại
-- Establish data classification và encryption standards trên tất cả services
-- Develop incident response playbooks và automation cho common security scenarios
-
-### Trải Nghiệm Sự Kiện
-
-Tham gia "AWS Cloud Mastery Series #3" về Well-Architected Security Pillar là một trải nghiệm vô cùng quý giá, cung cấp hiểu biết toàn diện về cloud security best practices và real-world implementation strategies.
-
-#### Điểm Nổi Bật
-- **Expert-led Security Training:** Học từ các AWS security specialists với kinh nghiệm enterprise sâu rộng
-- **Hands-on Demonstrations:** Practical demos của IAM policy validation, threat detection, và incident response
-- **Real-world Case Studies:** Học từ các actual security incidents và response scenarios
-- **Comprehensive Coverage:** Tất cả 5 security pillars được cover với practical implementation guidance
-
-#### Bài Học Quan Trọng
-- Security không phải là one-time implementation mà là continuous process cần constant monitoring và improvement
-- Zero-trust architecture yêu cầu fundamental changes trong cách chúng ta approach identity và access management
-- Automation là critical cho effective security at scale, đặc biệt cho detection và incident response
-- Data protection phải được implemented ở every layer, từ infrastructure đến application level
+Meetup ngày 13/06/2026 mang lại góc nhìn cân bằng giữa kỹ thuật và nghề nghiệp. Bên cạnh kiến thức về DevOps và kiến trúc AWS, những chia sẻ về tư duy phân tích, văn hóa doanh nghiệp, portfolio và cộng đồng giúp em hiểu rõ hơn cách phát triển năng lực một cách bền vững.
 
 #### Một Số Hình Ảnh Sự Kiện
 ![Hình ảnh sự kiện](/images/4-EventParticipated/event3.1.jpg)
 ![Hình ảnh sự kiện](/images/4-EventParticipated/event3.2.jpg)
-![Hình ảnh sự kiện](/images/4-EventParticipated/event3.3.jpg)
-![Hình ảnh sự kiện](/images/4-EventParticipated/event3.4.jpg)
-![Hình ảnh sự kiện](/images/4-EventParticipated/event3.5.jpg)
-![Hình ảnh sự kiện](/images/4-EventParticipated/event3.6.jpg)
 
-> Sự kiện security-focused này đã significantly enhance hiểu biết của em về cloud security architecture và cung cấp practical tools để implementing enterprise-grade security trong AWS environments. Comprehensive coverage của tất cả security pillars và hands-on approach đã làm cho complex security concepts trở nên accessible và immediately applicable.
+> Nhìn chung, sự kiện giúp em kết nối kiến thức chuyên môn với tư duy nghề nghiệp và tinh thần đóng góp cộng đồng. Đây là nền tảng quan trọng để tiếp tục phát triển theo hướng Cloud/DevOps và xây dựng các giải pháp có khả năng ứng dụng thực tế.

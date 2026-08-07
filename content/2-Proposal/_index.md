@@ -5,181 +5,176 @@ weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-
-# TaskHub - Task and Progress Management Platform following the DevSecOps Model on AWS
-
-> **Proposal Document:** [View on Google Docs](https://docs.google.com/document/d/14wEgjSuUkQs6SSVXwNQr4wmjwORjntfDizzC4zmPZIY/edit?tab=t.0)
+# Balan Coffee & Roastery – Modernizing the Online Coffee Platform on AWS
 
 ### **1. Executive Summary**
 
-TaskHub is a task and progress management platform designed to help working groups or small to medium-sized businesses manage work, deadlines, and progress in a visual and secure manner.
+Balan Coffee & Roastery is a project to modernize the existing coffee sales website by deploying it on the AWS platform, aiming to improve operability, security, and system observability.
 
-The system is developed following the **DevSecOps** model, built entirely on **AWS Serverless**, ensuring scalability, security, and cost optimization.
+The application is deployed on a single **Amazon EC2** instance using **Docker Compose** to run the frontend and backend containers together, combined with **Amazon CloudFront** as the content delivery layer for all incoming user requests.
 
-The development and deployment process uses **AWS CodePipeline** and **CodeBuild** to automate CI/CD and security testing.
+The backend connects to fully managed AWS services including **Amazon RDS (PostgreSQL)**, **Amazon S3**, **Amazon Cognito**, **Amazon SES**, **Amazon Bedrock**, and **AWS Secrets Manager**, ensuring that data, authentication, email delivery, and AI features are processed securely and separately from the application layer.
+
+Operational visibility is ensured through **Amazon CloudWatch** combined with the **CloudWatch Agent** installed directly on the EC2 instance.
 
 ### **2. Problem Statement**
 
 **Problem:**
 
-- Small businesses and project teams often struggle with managing workload, tracking progress, and distributing tasks among members.
-- Popular management tools like Jira or Asana often have high costs and lack seamless support for DevSecOps processes or the AWS environment.
+- The current Balan Coffee system is built and operated in a traditional way, without leveraging AWS managed services, making it difficult to scale, back up data, and monitor system health.
+- Sensitive information (API keys, database connection details) configured manually or stored directly in source code carries a high security risk.
+- The customer experience is limited due to the lack of smart product recommendations based on user behavior or preferences.
 
 **Solution:**
 
-- TaskHub uses a Serverless architecture on AWS to build a lightweight, secure, and cost-effective platform.
-- The platform is developed using **AWS Lambda**, **API Gateway**, **DynamoDB**, **Cognito**, and **S3/CloudFront**, while integrating **AWS CodePipeline** for CI/CD and dynamic security testing.
+- Containerize the frontend and backend using **Docker Compose**, deployed on **Amazon EC2**, simplifying operations within the scope of the workshop while retaining full control over the infrastructure.
+- Use **Amazon RDS (PostgreSQL)** in a private subnet to ensure relational data is managed, automatically backed up, and isolated from direct Internet access.
+- Integrate **Amazon Cognito** for user authentication, **AWS Secrets Manager** to securely manage sensitive configuration information, **Amazon S3** to store product files/images, **Amazon SES** to send transactional emails, and **Amazon Bedrock** to build an AI-powered chatbot/product recommendation feature.
+- The entire system is centrally monitored via **Amazon CloudWatch**.
 
 **Benefits and Return on Investment (ROI)**
 
-The TaskHub solution brings many practical benefits for development teams and small to medium-sized businesses. The system serves as a central platform for managing tasks, tracking progress, and delegating authority to members effectively. The application of the serverless model on AWS helps minimize operating costs, optimize resources, and increase scalability as usage demand grows. Furthermore, this platform supports building a practical DevSecOps environment, paving the way for research and development teams to expand further projects. According to estimates from the AWS Pricing Calculator, the system's operating cost is only about **$0.66 per month**, equivalent to **$7.92 per year**, while the entire initial infrastructure leverages shared services from AWS, with no additional hardware costs. The expected payback period is achieved within 6-12 months due to significantly reduced manual management work and optimized internal workflow.
+The solution helps Balan Coffee & Roastery transition from a manually operated model to a clearly structured model on AWS, separating the application, data, and security layers. Using managed services (RDS, S3, Cognito, SES, Bedrock) reduces the amount of manual operational work, while infrastructure costs at the workshop stage mostly fall within AWS's free tier/low-cost limits (small EC2 instance, single-AZ RDS, low S3 storage). This is a foundation that can gradually scale up to a full production architecture (ECS, Auto Scaling, Load Balancer) without needing to be redesigned from scratch.
 
 ### **3. Solution Architecture**
 
-The TaskHub platform is built based on AWS Serverless architecture, ensuring operational scalability, high performance, and cost-effective operation. The system focuses on task management, teamwork, and real-time project progress, while maintaining an automated development and deployment process through the DevSecOps model.
+The Balan Coffee & Roastery platform is built on a container deployment model on **Amazon EC2**, combined with AWS managed services to handle data, authentication, storage, email delivery, and AI features. The architecture ensures a clear separation between the content delivery layer, the application layer (public subnet), and the data layer (private subnet).
 
-The overall architecture includes key components such as Amazon API Gateway taking responsibility for receiving and distributing user requests, AWS Lambda handling business logic backend and interacting with the Amazon DynamoDB database to store task information, users, and access permissions.
+Main processing flow: users access the system via **HTTPS**, requests are distributed by **Amazon CloudFront** to the **Internet Gateway**, then forwarded to **Amazon EC2** located in the VPC's public subnet. On EC2, **Docker** runs the **Frontend** and **Backend** containers simultaneously. The backend communicates with **Amazon RDS (PostgreSQL)** located in the private subnet (TCP port 5432, controlled by a Security Group), and also calls **Amazon S3** (file/image storage), **Amazon Bedrock** (AI product recommendations/chatbot), **Amazon SES** (email delivery), and **Amazon Cognito** (user authentication).
 
-The web interface is hosted via **Amazon S3** and distributed globally by **Amazon CloudFront**, while AWS Cognito ensures authentication and user authorization.
+All EC2 activity is collected by the **CloudWatch Agent** (system metrics, application logs) and sent to **Amazon CloudWatch** for display on a Dashboard and to set up alerts.
 
-The CI/CD process is automated using **AWS CodePipeline** combined with **AWS CodeBuild**, enabling continuous development deployment and security testing without server management.
+The overall architecture is described in detail in the diagram below:
 
-The entire architecture is protected by **AWS WAF** and **AWS KMS** to enhance data security and ensure additional DevSecOps compliance. **AWS X-Ray** is used to monitor performance and analyze latency. The overall architecture is described in detail in the diagram below:
-
-![anh1](/images/2-Proposal/image1.png)
+![Balan Coffee & Roastery Solution Architecture](/images/2-Proposal/architecture.jpg)
 
 ### AWS Services Used
 
-1.  **Amazon Route 53:** Highly reliable DNS service, routing traffic.
-2.  **AWS WAF (Web Application Firewall):** Advanced protection layer, blocking common attacks.
-3.  **Amazon CloudFront:** Global distribution of user interface and static content.
-4.  **Amazon S3 (Simple Storage Service):** Static hosting of the entire web interface source code (Next.js build files).
-5.  **Amazon Cognito:** User authentication and authorization management.
-6.  **Amazon API Gateway:** Middleware communication layer, performing authentication and routing API requests to Lambda.
-7.  **AWS Lambda:** Core business logic processing. Integrated to log activities into CloudWatch Logs.
-8.  **Amazon DynamoDB:** High-performance NoSQL database. Data is encrypted using **AWS KMS**.
-9.  **AWS SNS (Simple Notification Service):** Handles asynchronous notifications.
-10. **AWS Secrets Manager:** Secure storage, management, and rotation of secrets.
-11. **AWS CodePipeline, CodeBuild, & CodeGuru:**
-    - **CodePipeline/CodeBuild:** Building and automating the CI/CD process. CodeBuild runs automated tests and Static Application Security Testing (SAST).
-    - **AWS CodeGuru:** Automated source code analysis tool, integrated into the CI/CD process to **provide intelligent recommendations for performance optimization and code quality improvement**, especially important in the Lambda environment.
-12. **AWS CloudFormation:** **Infrastructure as Code (IaC)** service for deploying all resources.
-13. **AWS CloudWatch Logs & AWS X-Ray:** **CloudWatch Logs** collects logs. **CloudWatch** uses this data to set up alerts. **AWS X-Ray** provides in-depth request tracing capabilities.
+1.  **Amazon EC2:** Compute server, running the application via Docker.
+2.  **Docker (Docker Compose):** Packages and runs the frontend and backend containers together.
+3.  **Amazon CloudFront:** Global content delivery, HTTPS termination, and improved page-load performance.
+4.  **Amazon RDS (PostgreSQL):** Relational database, storing all business data (products, orders, users).
+5.  **Amazon S3:** Object storage (product images, static files).
+6.  **Amazon Cognito:** User authentication and authorization.
+7.  **Amazon SES:** Sends transactional/notification emails.
+8.  **Amazon Bedrock:** Provides AI capability for the chatbot and product recommendation feature.
+9.  **AWS Secrets Manager:** Securely stores and manages sensitive configuration information (environment variables, connection keys).
+10. **Amazon CloudWatch (and CloudWatch Agent):** Collects metrics and logs, and displays a system monitoring dashboard.
+11. **Amazon VPC (Public/Private Subnet, Internet Gateway, Security Group):** Network design that isolates the data layer from direct Internet access.
 
 ### **Component Design**
 
 1.  **User Interface Layer (Frontend):**
-    - **Interface:** **Next.js** application built as static files.
-    - **Hosting & Distribution:** Static files are securely stored in **Amazon S3** (configured as Origin for CloudFront). This interface is distributed globally by **Amazon CloudFront** with low latency, while being protected by **AWS WAF** (Web Application Firewall) at the Edge layer.
+
+    - Runs as a Docker container on EC2, serving the web interface to customers.
+    - Distributed globally via **Amazon CloudFront**, ensuring fast load times and always using HTTPS.
 
 2.  **Business Logic Layer (Backend):**
-    - **API Gateway:** **Amazon API Gateway** receives all requests. It is configured with **Cognito Authorizer** to validate user tokens before forwarding requests.
-    - **Processing:** **Lambda Functions** are responsible for handling business logic (CRUD tasks, team management, permissions).
-    - **Secret Management:** Each Lambda function accesses sensitive information (such as external API keys) through **AWS Secrets Manager**, ensuring secrets are never hard-coded.
+
+    - Runs as a separate Docker container on the same EC2 instance, handling all business logic (products, orders, authentication, AI integration).
+    - Accesses sensitive configuration information (RDS connection, Bedrock/SES API keys, etc.) through **AWS Secrets Manager**, rather than storing it directly in source code.
 
 3.  **Data Layer (Database):**
-    - **Database:** **Amazon DynamoDB** is used to store task data, progress, and user configuration. DynamoDB operates in **On-Demand** mode for automatic scaling and cost optimization.
-    - **Data Security:** All data at rest in DynamoDB is encrypted using keys managed by **AWS KMS (Key Management Service)**, meeting the highest security standards.
+
+    - **Amazon RDS PostgreSQL** is placed in the private subnet, only allowing connections from the backend EC2's Security Group (port 5432), with no exposure to the Internet.
+    - Responsible for storing all transaction, product, and user data.
 
 4.  **Security and Authentication:**
-    - **Authentication:** **Amazon Cognito** provides login mechanisms, session management, and Role-Based Access Control (RBAC) for users. Cognito also supports **Multi-Factor Authentication (MFA)** and SSO (Single Sign-On) integration.
-    - **Edge Protection:** **AWS WAF** is placed in front of CloudFront to prevent Layer 7 DDoS attacks and other common security vulnerabilities (OWASP Top 10).
 
-5.  **Deployment and Monitoring:**
-    - **CI/CD DevSecOps:** Source code is stored on **GitLab** (as per the diagram) and automated via the **AWS CodePipeline/CodeBuild** chain. This process includes running **CodeGuru** to optimize code before deploying infrastructure via **CloudFormation**.
-    - **Monitoring & Debugging:** **AWS CloudWatch Logs** collects detailed logs from all services. **AWS CloudWatch** uses these logs to set up automatic alerts for errors or incidents. **AWS X-Ray** provides an overview of transaction flow performance, aiding in debugging and latency optimization.
+    - **Amazon Cognito** provides sign-up/sign-in mechanisms and JWT-based authentication for users.
+    - **Security Group** tightly controls traffic between components (only the backend can access RDS).
+    - **AWS Secrets Manager** ensures sensitive information is rotated and centrally managed.
+    - All user traffic goes through **HTTPS** via CloudFront.
+
+5.  **Monitoring and Operations:**
+
+    - **CloudWatch Agent** installed on EC2 collects infrastructure metrics (CPU, RAM, disk) and application logs.
+    - **Amazon CloudWatch** aggregates this data for Dashboard display and can be configured to trigger alerts when anomalies are detected.
 
 ### **4. Technical Implementation**
 
-The development of the TaskHub project is divided into two main parts—building the AWS serverless infrastructure and developing the task management platform—each including the following key implementation phases:
+The project is implemented in the following main phases:
 
-**Declared Development Phases**
+**Phase 1: Architecture Design**
 
-**Phase 1: Design and Modeling (Month 1)**
-- **Main Action:** Research Serverless/DevSecOps, select core services (Lambda, DynamoDB, API Gateway). Design detailed architecture diagrams and NoSQL data models.
-- **Deliverables:** Architecture Diagram and Data Model Documentation.
+- Research the container deployment model on EC2, select suitable AWS services (RDS, S3, Cognito, SES, Bedrock, Secrets Manager).
+- Design the VPC network diagram (public/private subnet) and Security Group rules.
+- **Deliverable:** Solution Architecture diagram.
 
-**Phase 2: Infrastructure as Code Initialization (Month 2)**
-- **Main Action:** Calculate detailed operating costs. Use AWS CDK to build IaC source code for platform services (S3, CloudFront, Cognito), ensuring environment reproducibility.
-- **Deliverables:** Base AWS CDK source code and Operating Cost Report.
+**Phase 2: AWS Infrastructure Initialization**
 
-**Phase 3: DevSecOps Automation Setup (Month 2-3)**
-- **Main Action:** Set up a complete CI/CD Pipeline (CodePipeline/CodeBuild). Integrate AWS CodeGuru and SAST tools to automate source code quality and security checks before deployment.
-- **Deliverables:** Operational CodePipeline and automated security scanning process.
+- Create the VPC, subnets, Internet Gateway, and Security Groups.
+- Launch EC2, configure Docker/Docker Compose, initialize the RDS PostgreSQL instance and S3 bucket.
+- **Deliverable:** AWS infrastructure ready for application deployment.
 
-**Phase 4: Development and Deployment (Month 3-4)**
-- **Main Action:** Develop functionality (Lambda Functions with TypeScript) and interface (Next.js). Perform Integration Testing between services. Deploy the official production release via Pipeline.
-- **Deliverables:** TaskHub Beta Version (complete CRUD) and Testing Report.
+**Phase 3: Managed Service Integration**
+
+- Integrate Cognito for authentication, Secrets Manager for sensitive configuration, SES for email delivery, and Bedrock for the AI recommendation/chatbot feature.
+- **Deliverable:** A complete backend with full AWS integration.
+
+**Phase 4: Deployment and Monitoring**
+
+- Deploy the frontend/backend via Docker Compose on EC2, configure CloudFront.
+- Install the CloudWatch Agent, build a monitoring dashboard, and test the entire application flow.
+- **Deliverable:** A fully operational system with monitoring, ready for demo.
 
 **Technical Requirements**
-- **Architecture and Tools:** The entire system is declared and managed using AWS CDK to ensure infrastructure consistency.
-- **Technology:** Backend uses TypeScript/Node.js. Frontend uses Next.js (React).
-- **Source Code Management:** Source code on GitLab, automated deployment via AWS CodePipeline.
-- **Monitoring:** Configure CloudWatch, X-Ray, and CloudWatch Logs for performance monitoring and in-depth debugging.
-- **Non-functional Requirements:** The system is located in Singapore (ap-southeast-1) to optimize speed in Vietnam, capable of scaling up to 50 users, and uses AWS KMS for data encryption.
+
+- **Infrastructure:** VPC with a public subnet (EC2, Internet Gateway) and a private subnet (RDS), with Security Groups controlling access.
+- **Technology:** Docker/Docker Compose for containerization; PostgreSQL for the database.
+- **Security:** Cognito for authentication (JWT), Secrets Manager for configuration management, HTTPS via CloudFront.
+- **Monitoring:** CloudWatch Agent + CloudWatch (Metrics, Logs, Dashboard).
+- **Deployment Region:** ap-southeast-1 (Singapore) to optimize access speed in Vietnam.
 
 ### **5. Timeline & Key Milestones**
 
-#### **Project Timeline**
-- **Pre-internship (Month 0):** Prepare plans, research DevSecOps and AWS Serverless services.
-- **Month 1:** Set up development environment, initiate AWS infrastructure and CI/CD pipeline.
-- **Month 2:** Design architecture, develop core functionality, and automate security testing.
-- **Month 3:** Integrate frontend-backend, develop testing, and launch the platform.
-- **Post-launch:** Maintenance, performance evaluation, and expansion of advanced features.
+- **Preparation Phase:** Research the architecture, divide work according to each team member's role.
+- **Phase 1:** Design the architecture and network infrastructure (VPC, subnets, Security Groups).
+- **Phase 2:** Initialize AWS infrastructure (EC2, RDS, S3) and deploy the base containers.
+- **Phase 3:** Integrate managed services (Cognito, Secrets Manager, SES, Bedrock).
+- **Phase 4:** Finalize monitoring (CloudWatch), testing, and product demo.
 
-### **6. Budget Estimate**
+### **6. Team Assignment**
 
-| Resource | Responsibility | Rate (USD) / Hour |
-|---|---|---|
-| Solution Architects [1 person] | System Architecture Design, API design, Database Schema, Technical Leadership | 6 |
-| Engineers [3 person] | Backend Development, Frontend Development, Security Implement | 4 |
-| Other (DevOps) [1 person] | CI/CD, Cloud Deployment, Monitoring, Security, Security Configuration | 4 |
-
-| Project Phase | Solution Architects | Engineers | Other (Please specify) | Total Hours |
-|---|---|---|---|---|
-| System Design & Architecture | 20 | 10 | 0 | 30 |
-| Backend Development | 10 | 80 | 0 | 90 |
-| Frontend Development | 5 | 60 | 0 | 65 |
-| Security & CI/CD Setup | 5 | 30 | 10 | 45 |
-| Testing & Deployment | 5 | 30 | 0 | 35 |
-| **Total Hours** | **45** | **210** | **10** | **265** |
-| **Total Cost (USD)** | **270** | **840** | **40** | **800** |
-
-Cost Contribution distribution between Partner, Customer, AWS:
-
-| Party | Contribution (USD) | % Contribution of Total |
-|---|---|---|
-| Customer | 0 | 0 |
-| Partner | 0 | 0 |
-| AWS | 800 | 100 |
+| Member | Scope of Responsibility |
+|---|---|
+| Tran Minh Quan | AWS infrastructure, deployment (VPC, EC2, Docker), database (RDS), and monitoring (CloudWatch) |
+| Nguyen Vo Duy Tuan | User authentication (Cognito) and secret configuration management (Secrets Manager) |
+| Pham Nguyen Quang Minh | File storage (S3), AI feature (Bedrock), and backend API integration |
+| Trinh Gia Huy | Technical documentation, architecture design, and product demo |
 
 ### **7. Risk Assessment**
 
 **Risk Matrix**
-- Network or AWS service disruption: Medium impact, medium probability.
-- CI/CD deployment errors: High impact, low probability.
-- Exceeding AWS budget: Medium impact, low probability.
-- Security vulnerabilities: High impact, medium probability.
-- Performance degradation under load: Medium impact, medium probability.
+
+- AWS service disruption or outage: Medium impact, low probability.
+- Single EC2 instance failure (no Auto Scaling/Load Balancer): High impact, medium probability.
+- Misconfigured Security Group exposing the RDS port: High impact, low probability.
+- Exceeding the free-tier usage limits for Bedrock/SES: Medium impact, medium probability.
+- Data loss due to lack of periodic backups: High impact, low probability.
 
 **Mitigation Strategies**
-- Use AWS multi-region and monitor with CloudWatch/X-Ray.
-- Test and review source code before deployment via **CodePipeline**.
-- Set up cost alerts via AWS Budgets.
-- Perform automated security scanning using **CodeBuild** (replacing GitHub Actions).
+
+- Set up CloudWatch alerts when EC2/RDS resources exceed thresholds.
+- Regularly review Security Group configurations, only opening necessary ports.
+- Enable automated backups for RDS.
+- Monitor Bedrock/SES usage via CloudWatch to avoid exceeding limits.
 
 **Contingency Plan**
-- Maintain a staging environment for quick recovery.
-- Use CloudFormation and AWS Backup for configuration and data backup.
+
+- Document infrastructure configuration so it can be quickly rebuilt if needed.
+- Can be extended to ECS/Auto Scaling when higher availability is required (see Expected Outcomes section).
 
 ### **8. Expected Outcomes**
 
 **Technical Improvements**
-- **Comprehensive Automation:** Complete transition to automated **DevSecOps** process. New system deployment time takes **under 6 minutes**.
-- **Performance Guarantee:** Fast application operation (API response **under 150ms**) and stability (**99.9% Uptime**) thanks to Serverless architecture.
-- **Integrated Security:** Automated scanning and remediation of high-level security vulnerabilities during the Code Build process.
-- **Scalability Ready:** The platform can scale to serve many users and handle large traffic volumes without structural changes.
+
+- **Infrastructure Modernization:** Transition from manual operations to a containerized model on AWS with managed services (RDS, S3, Cognito, SES, Bedrock).
+- **Improved Security:** Database isolated in a private subnet, centralized secret management via Secrets Manager, authentication via Cognito.
+- **Centralized Monitoring:** The entire system is monitored via CloudWatch, enabling early issue detection.
+- **Better Customer Experience:** Integrated AI-powered product recommendation/chatbot feature via Amazon Bedrock.
 
 **Long-term Value**
-- **Technical Asset Creation:** Creation of a complete **AWS CDK/CloudFormation** codebase. This is a cost-optimized Serverless architecture template that can be reused for **other projects** by the team.
-- **Robust Platform Foundation:** Establishment of a work management and development environment following industrial standards (DevSecOps), ready for future feature expansion.
+
+- **Scalable Foundation:** The current architecture is a stepping stone to scale up to **Amazon ECS, Application Load Balancer, Auto Scaling Group, Route 53, AWS WAF, AWS Certificate Manager**, and a **CI/CD Pipeline** in the future, in line with the direction outlined in the solution architecture document.
+- **Technical Asset:** The architecture documentation and infrastructure configuration can be reused as a foundation for similar projects by the team.

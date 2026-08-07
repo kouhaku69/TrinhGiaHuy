@@ -1,195 +1,457 @@
 ---
 title: "Blog 2"
-date: "2025-07-10"
+date: "2026-07-31"
 weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
-# Democratize data for timely decisions with text-to-SQL at Parcel Perform
 
-by Yudho Ahmad Diponegoro, Le Vy, and Jun Kai Loke | on July 09, 2025 | in [Amazon Athena](https://aws.amazon.com/athena/), [Amazon Bedrock](https://aws.amazon.com/bedrock/), [Amazon Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/), [Business Intelligence](https://aws.amazon.com/business-intelligence/), [Customer Solutions](https://aws.amazon.com/solutions/), [Generative AI](https://aws.amazon.com/generative-ai/), [Intermediate (200)](https://aws.amazon.com/training/), [Supply Chain](https://aws.amazon.com/supply-chain/)
+# Automatically start and stop EC2 with Amazon EventBridge Scheduler without writing Lambda
 
-*This post is co-written with Le Vy from Parcel Perform.*
----
-Access to accurate data is often the true differentiator between excellent decisions and timely decisions. This becomes even more critical for customer-facing decisions and actions. A modern AI deployed correctly can help your organization simplify data access to make accurate and timely decisions for customer-facing business teams, while minimizing the undifferentiated heavy lifting that your data team has to do. In this post, we share how [Parcel Perform](https://www.parcelperform.com/), a leading AI Delivery Experience platform for global ecommerce businesses, has implemented such a solution.
-
-Accurate post-purchase deliveries tracking can be crucial for many ecommerce merchants. Parcel Perform provides an AI-driven, intelligent end-to-end data and delivery experience and software as a service (SaaS) system for ecommerce merchants. The system uses AWS services and state-of-the-art AI to process hundreds of millions of daily parcel delivery movement data and provide a unified tracking capability across couriers for the merchants, with emphasis on accuracy and simplicity.
-
-The business team in Parcel Perform often needs access to data to answer questions related to merchants’ parcel deliveries, such as “Did we see a spike in delivery delays last week? If so, in which transit facilities were this observed, and what was the primary cause of the issue?” Previously, the data team had to manually form the query and run it to fetch the data. With the new generative AI-powered text-to-SQL capability in Parcel Perform, the business team can self-serve their data needs by using an AI assistant interface. In this post, we discuss how Parcel Perform incorporated generative AI, data storage, and data access through AWS services to make timely decisions. 
+**Adapted from AWS Compute Blog, AWS DevOps Blog, and AWS Documentation** | Topics: Amazon EventBridge Scheduler, EC2, Automation, Cost Optimization, IAM
 
 ---
 
-## Data analytics architecture
+One of the easiest ways to waste money on AWS is to leave a development environment running 24/7 even though the team only works for 8–10 hours per day.
 
-The solution starts with data ingestion, storage, and access. Parcel Perform adopts a data analytics architecture as shown in the following diagram.
+Assume an EC2 instance is needed only:
 
-![Data Analytics Architecture](/images/3-Blog/ML-18476-data-architecture.png)
-
-One key data type in the Parcel Perform parcel monitoring application is the parcel event data, which can reach billions of rows. This includes the parcel’s shipment status change, location change, and much more. This day-to-day data from multiple business units lands in relational databases hosted on  [Amazon Relational Database Service](https://aws.amazon.com/rds/) (Amazon RDS).
-
-Although relational databases are suitable for rapid data ingestion and consumption from the application, a separate analytics stack is needed to handle analytics in a scalable and performant way without disrupting the main application. These analytics needs include answering aggregation queries from questions like “How many parcels were delayed last week?”
-
-Parcel Perform uses [Amazon Simple Storage Service](https://aws.amazon.com/s3/) (Amazon S3) with a query engine provided by [Amazon Athena](https://aws.amazon.com/athena/) to meet their analytics needs. With this approach, Parcel Perform benefits from cost-effective storage while still being able to run SQL queries as needed on the data through Athena, which is priced on usage.
-
-Data in Amazon S3 is stored in [Apache Iceberg](https://iceberg.apache.org/) data format that allows data updates, which is useful in this case because the parcel events sometimes get updated. It also supports partitioning for better performance [Amazon S3 Tables](https://aws.amazon.com/s3/features/tables/), launched in late 2024, is a feature for managing Iceberg tables, and could also be an option for you.
-
-Parcel Perform uses an [Apache Kafka](https://kafka.apache.org/) cluster managed by [Amazon Managed Streaming for Apache Kafka](https://aws.amazon.com/msk/) (Amazon MSK) as a stream to transfer data from source to S3 bucket. [Amazon MSK Connect](https://aws.amazon.com/msk/features/msk-connect/) with Debezium connector streams data using change data capture (CDC) from Amazon RDS to Amazon MSK.
-
-[Apache Flink](https://flink.apache.org/), running on [Amazon Elastic Kubernetes Service](https://aws.amazon.com/eks/) (Amazon EKS), processes the data streams from Amazon MSK. It writes this data to the S3 bucket in Iceberg format, and updates the data schema in [AWS Glue Data Catalog](https://docs.aws.amazon.com/glue/latest/dg/catalog-and-crawler.html). This data schema allows Athena to query the correct data in the S3 bucket.
-
-Now that you understand how data is ingested and stored, we'll look at how data is consumed through a data serving assistant using generative AI for business teams at Parcel Perform.
-
----
-
-## Data-queryable AI agent
-
-The users of the data serving AI agent at Parcel Perform are customer-facing business team members who regularly query parcel event data to answer questions from ecommerce merchants about deliveries and support them proactively. The following screenshot shows the AI assistant UI experience, powered by text-to-SQL with generative AI.
-
-![AI Assistant UI](/images/3-Blog/ML-18476-ai-assistant-screenshot.png)
-
-This functionality helped the Parcel Perform team and their customers save time, which we discuss later in this post. In the following section, we present the architecture that powers this feature.
-
----
-
-## Text-to-SQL AI agent architecture
-
-The data serving AI assistant architecture in Parcel Perform is shown in the following diagram.
-
-![Text-to-SQL Architecture](/images/3-Blog/ML-18476-ai-assistant-architecture.png)
-
-The AI assistant UI is supported by an application built with the [FastAPI](https://fastapi.tiangolo.com/) framework hosted on Amazon EKS. It is also fronted by an [Application Load Balancer](https://aws.amazon.com/elasticloadbalancing/application-load-balancer/) to allow for potential horizontal scalability.
-
-The application uses [LangGraph](https://www.langchain.com/langgraph) to orchestrate the workflow of large language model (LLM) calls, tool usage, and memory checkpointing. The graph uses multiple tools, including tools from the [SQLDatabase Toolkit](https://python.langchain.com/docs/integrations/tools/sql_database/) to automatically retrieve data schema through Athena. The graph also uses an [Amazon Bedrock Knowledge Bases retriever](https://python.langchain.com/docs/integrations/retrievers/bedrock/) to retrieve business information from a knowledge base. Parcel Perform uses [Anthropic's Claude models in Amazon Bedrock](https://aws.amazon.com/bedrock/claude/) to generate SQL.
-
-Although the function of Athena as a query engine to query the parcel event data on Amazon S3 is clear, Parcel Perform still needs a knowledge base. In this use case, the SQL generation performs better when the LLM has more business contextual information to help interpret database fields and translate logistics terminology into data representations. This is better illustrated with the following two examples:
-
-1. Parcel Perform’s data lake operations use specific codes `c` for create and `u` for update. When analyzing data, Parcel Perform sometimes needs to focus only on initial creation records, where operation code is equal to `c`. Because this business logic might not be inherent in the training of LLMs in general, Parcel Perform explicitly defines this in their business context.
-
-2. In logistics terminology, transit time has specific industry conventions. It’s measured in days, and same-day deliveries are recorded as `transit_time = 0`. Although this is intuitive for logistics professionals, an LLM might incorrectly interpret a request like “Get me all shipments with same-day delivery” by using`WHERE transit_time = 1` instead of `WHERE transit_time = 0` in the generated SQL.
-
-Therefore, each incoming question goes to a Retrieval Augmented Generation (RAG) workflow to find potentially relevant stored business information, to enrich the context. This mechanism helps provide the specific rules and interpretations that even advanced LLMs might not be able to derive from general training data.
-
-Parcel Perform uses [Amazon Bedrock Knowledge Bases](https://aws.amazon.com/bedrock/knowledge-bases/) as a managed solution for the RAG workflow. They ingest business context information by uploading files to Amazon S3. Amazon Bedrock Knowledge Bases processes the files, chunks them, uses embedding models to create vectors, and stores the vectors in a vector database so they can be searched. These steps are fully managed by Amazon Bedrock Knowledge Bases. Parcel Perform stores the vectors in [Amazon OpenSearch Serverless](https://aws.amazon.com/opensearch-service/features/serverless/) as the chosen vector database to simplify infrastructure management.
-
-Amazon Bedrock Knowledge Bases provides the [Retrieve API](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html), which takes in an input (such as a question from the AI assistant), converts it into a vector embedding, searches for relevant chunks of business context information in the vector database, and returns the top relevant document chunks. It is integrated with the [LangChain](https://www.langchain.com/) Amazon Bedrock Knowledge Bases retriever by [calling the invoke method](https://python.langchain.com/api_reference/aws/retrievers/langchain_aws.retrievers.bedrock.AmazonKnowledgeBasesRetriever.html#langchain_aws.retrievers.bedrock.AmazonKnowledgeBasesRetriever.invoke).
-
-The next step involves invoking an AI agent with the supplied business contextual information and the SQL generation prompt. The prompt was inspired by [a prompt in LangChain Hub](https://smith.langchain.com/hub/langchain-ai/sql-agent-system-prompt). The following is a code snippet of the prompt:
-
-```
-You are an agent designed to interact with a SQL database.
-Given an input question, create a syntactically correct {dialect} query to run, then look at the results of the query and return the answer.
-Unless the user specifies a specific number of examples they wish to obtain, always limit your query to at most {top_k} results.
-
-Relevant context:
-{rag_context}
-
-You can order the results by a relevant column to return the most interesting examples in the database.
-Never query for all the columns from a specific table, only ask for the relevant columns given the question.
-You have access to tools for interacting with the database.
-- Only use the below tools. Only use the information returned by the below tools to construct your final answer.
-- DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database.
-- To start querying for final answer you should ALWAYS look at the tables in the database to see what you can query. Do NOT skip this step.
-- Then you should query the schema of the most relevant tables
+```text
+Monday-Friday
+08:00-18:00
 ```
 
-The prompt sample is part of the initial instruction for the agent. The data schema is automatically inserted by the tools from the SQLDatabase Toolkit at a later step of this agentic workflow. The following steps occur after a user enters a question in the AI assistant UI:
+Relying on someone to remember to stop it manually is not a reliable control.
 
-1. The question triggers a LangGraph execution run.
+Amazon EventBridge Scheduler solves this problem by creating one-time or recurring schedules that call AWS service APIs. With universal targets, you can call EC2 `StartInstances` and `StopInstances` directly instead of writing a Lambda function whose only job is to execute a few SDK calls.
 
-2. The following processes happen in parallel:
- a. The graph fetches the database schema from Athena through SQLDatabase Toolkit.
- b. The graph passes the question to the Amazon Bedrock Knowledge Bases retriever and gets a list of relevant business information regarding the question.
+Primary sources:
 
-3. The graph invokes an LLM using Amazon Bedrock by passing the question, the conversation context, data schema, and business context information. The result is the generated SQL.
-
-4. The graph uses the SQLDatabase Toolkit again to run the SQL through Athena and receive data results.
-
-5. The data output is passed into an LLM to generate the final response based on the initial question asked. [Amazon Bedrock Guardrails](https://aws.amazon.com/bedrock/guardrails/) is used as a safeguard to avoid inappropriate inputs and responses.
-
-6. The final response is returned to the user through the AI assistant UI.
-
-The following diagram illustrates these steps.
-
-![Workflow Steps](/images/3-Blog/ML-18476-ai-assistant-architecture-numbered.png)
-
-This implementation demonstrates how Parcel Perform transforms raw inquiries into actionable data for timely decision-making. Security is also implemented in multiple components. From a network perspective, the EKS pods are placed in private subnets in [Amazon Virtual Private Cloud](http://aws.amazon.com/vpc) (Amazon VPC)  to improve network security of the AI assistant application. This AI agent is placed behind a backend layer that requires authentication. For data security, sensitive data is masked at rest in the S3 bucket. Parcel Perform also limits the permissions of the [AWS Identity and Access Management](https://aws.amazon.com/iam/) (IAM) role used to access the S3 bucket so it can only access certain tables.
-
-In the following sections, we discuss how Parcel Perform approached building this data transformation solution.
+- [AWS Compute Blog – Introducing Amazon EventBridge Scheduler](https://aws.amazon.com/blogs/compute/introducing-amazon-eventbridge-scheduler/)
+- [AWS DevOps Blog – EventBridge Scheduler L2 Construct](https://aws.amazon.com/blogs/devops/announcing-the-general-availability-of-the-amazon-eventbridge-scheduler-l2-construct/)
+- [AWS Documentation – Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html)
+- [AWS What’s New – EventBridge Scheduler adds 619 new SDK API actions](https://aws.amazon.com/about-aws/whats-new/2026/05/amazon-eventbridge-sdk-integrations/)
 
 ---
 
-## From idea to production
+## 1. Why not just use cron on EC2?
 
-Parcel Perform started with the idea of freeing their data team from manually serving the request from the business team, while also improving the timeliness of the data availability to support the business team’s decision-making.
+A familiar approach is:
 
-With the help of the AWS Solutions Architect team, Parcel Perform completed a proof of concept using AWS services and a [Jupyter notebook](https://jupyter.org/) in [Amazon SageMaker Studio](https://aws.amazon.com/sagemaker-ai/studio/). After an initial success, Parcel Perform integrated the solution with their orchestration tool of choice, LangGraph.
+```bash
+crontab -e
+```
 
-Before going into production, Parcel Perform conducted thorough testing to verify result consistency. They added [LangSmith Tracing](https://docs.smith.langchain.com/observability) to record the steps and results of the AI agent to evaluate its performance.
+and a script that calls the AWS CLI.
 
-The Parcel Perform team discovered challenges during their journey, which we discuss in the following section. They performed prompt engineering to address those challenges. Eventually, the AI agent was integrated into production to be used by the business team. Afterward, Parcel Perform collected user feedback internally and monitored logs from LangSmith Tracing to verify performance was maintained.
+The problem is that the server running cron also has to stay available, be patched, have credentials, and remain reliable.
+
+Another approach is:
+
+```text
+EventBridge Rule
+-> Lambda
+-> EC2 API
+```
+
+This works, but if Lambda only calls `StopInstances`, it adds a compute and code layer that may not be necessary.
+
+EventBridge Scheduler can simplify the path to:
+
+```text
+Schedule
+-> EC2 StopInstances API
+```
 
 ---
 
-## Challenges
+## 2. What is EventBridge Scheduler?
 
-This journey was not immune to challenges.
+EventBridge Scheduler is a managed serverless scheduler.
 
-This journey isn’t free from challenges. Firstly, some ecommerce merchants might have several records in the data lake under various names. For example, a merchant with the name “ABC” might have multiple records such, as “ABC Singapore Holdings Pte. Ltd.,” “ABC Demo Account,” “ABC Test Group,” and so on. For a question like “Was there any parcel shipment delay by ABC last week?”, the generated SQL has the element of `WHERE merchant_name LIKE '%ABC%'` which might result in ambiguity. During the proof of concept stage, this problem caused incorrect matching of the result.
+It supports:
 
-For this challenge, Parcel Perform relies on careful prompt engineering to instruct the LLM to identify when the name was potentially ambiguous. The AI agent then calls Athena again to look for matching names. The LLM decides which merchant name to use based on multiple factors, including the significance in data volume contribution and the account status in the data lake. In the future, Parcel Perform intends to implement a more sophisticated technique by prompting the user to resolve the ambiguity.
+```text
+at(...)
+rate(...)
+cron(...)
+```
 
-The second challenge is about unrestricted questions that might yield expensive queries running across large amounts of data and resulting in longer query waiting time. Some of these questions might not have a LIMIT clause imposed in the query. To solve this, Parcel Perform instructs the LLM to add a LIMIT clause with a certain number of maximum results if the user doesn’t specify the intended number of results. In the future, Parcel Perform plans to use the query EXPLAIN results to identify heavy queries.
+### One-time
 
-The third challenge is related to tracking usage and incurred cost of this particular solution. Having started multiple generative AI projects using Amazon Bedrock and sometimes with the same LLM ID, Parcel Perform must distinguish usage incurred by projects. Parcel Perform creates an [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles.html) for each project, associates the profile with [tags](https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/what-are-tags.html), and includes that profile in each LLM call for that project. With this setup, Parcel Perform is able to segregate costs based on projects to improve cost visibility and monitoring.
+```text
+at(2026-08-01T10:00:00)
+```
+
+### Rate
+
+```text
+rate(15 minutes)
+```
+
+### Cron
+
+```text
+cron(0 18 ? * MON-FRI *)
+```
+
+It also supports time zones, allowing you to configure:
+
+```text
+Asia/Ho_Chi_Minh
+```
+
+instead of manually converting every schedule to UTC.
 
 ---
 
-## The impact
-To extract data, the business team clarifies details with the data team, makes a request, checks feasibility, and waits for bandwidth. This process lengthens when requirements come from customers or teams in different time zones, with each clarification adding 12–24 hours due to asynchronous communication. Simpler requests made early in the workday might complete within 24 hours, whereas more complex requests or those during busy periods can take 3–5 business days.
+## 3. Lab architecture
 
-With the text-to-SQL AI agent, this process is dramatically streamlined—minimizing the back-and-forth communication for requirement clarification, removing the dependency on data team bandwidth, and automating result interpretation.
+Goal:
 
-Parcel Perform’s measurements show that the text-to-SQL AI agent reduces the average time-to-insight by 99%, from 2.3 days to an average of 10 minutes, saving approximately 3,850 total hours of wait time per month across requesters while maintaining data accuracy.
+```text
+08:00 -> Start EC2
+18:00 -> Stop EC2
+Monday-Friday
+Asia/Ho_Chi_Minh
+```
 
-Users can directly query the data without intermediaries, receiving results in minutes rather than days. Teams across time zones can now access insights any time of day, alleviating the frustrating “wait until Asia wakes up” or “catch EMEA before they leave” delays, leading to happier customers and faster problem-solving.
+Flow:
 
-This transformation has profoundly impacted the data analytics team’s capacity and focus, freeing the data team for more strategic work and helping everyone make faster, more informed decisions. Before, the analysts spent approximately 25% of their working hours handling routine data extraction requests—equivalent to over 260 hours monthly across the team. Now, with basic and intermediate queries automated, this number has dropped to just 10%, freeing up nearly 160 hours each month for high-impact work. Analysts now focus on complex data analysis rather than spending time on basic data retrieval tasks.
+```text
+EventBridge Scheduler
+        |
+        | assumes execution role
+        v
+       IAM Role
+        |
+        | ec2:StartInstances
+        | ec2:StopInstances
+        v
+     EC2 Instance
+```
+
+Create two schedules:
+
+1. `start-dev-ec2`
+2. `stop-dev-ec2`
+
+---
+
+## 4. Step 1: Prepare an EC2 instance
+
+Create a lab EC2 instance and save its Instance ID:
+
+```text
+i-0123456789abcdef0
+```
+
+Do not test this workflow directly on a production instance.
+
+---
+
+## 5. Step 2: Create an IAM execution role
+
+EventBridge Scheduler needs to assume an IAM role before it can call EC2.
+
+### Trust policy
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "scheduler.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+### Permission policy
+
+Grant only the actions needed and scope them to the target instance:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:StartInstances",
+        "ec2:StopInstances"
+      ],
+      "Resource": "arn:aws:ec2:<region>:<account-id>:instance/i-0123456789abcdef0"
+    }
+  ]
+}
+```
+
+Important idea:
+
+> Scheduler does not automatically have permission to stop EC2. It can only perform actions allowed by its execution role.
+
+---
+
+## 6. Step 3: Start EC2 at 08:00
+
+In the AWS Console:
+
+```text
+Amazon EventBridge
+-> Scheduler
+-> Create schedule
+```
+
+Example configuration:
+
+```text
+Name: start-dev-ec2
+Schedule type: Recurring
+Cron: cron(0 8 ? * MON-FRI *)
+Time zone: Asia/Ho_Chi_Minh
+Flexible time window: Off
+```
+
+Choose the EC2 API target corresponding to:
+
+```text
+StartInstances
+```
+
+Input:
+
+```json
+{
+  "InstanceIds": [
+    "i-0123456789abcdef0"
+  ]
+}
+```
+
+Select the execution role created earlier.
+
+---
+
+## 7. Step 4: Stop EC2 at 18:00
+
+Create a second schedule:
+
+```text
+Name: stop-dev-ec2
+Cron: cron(0 18 ? * MON-FRI *)
+Time zone: Asia/Ho_Chi_Minh
+```
+
+Target:
+
+```text
+EC2 StopInstances
+```
+
+Input:
+
+```json
+{
+  "InstanceIds": [
+    "i-0123456789abcdef0"
+  ]
+}
+```
+
+Use the same execution role.
+
+---
+
+## 8. Why this can reduce cost
+
+If a development instance runs only 10 hours per day, 5 days per week:
+
+```text
+10 x 5 = 50 hours/week
+```
+
+Running continuously would be:
+
+```text
+24 x 7 = 168 hours/week
+```
+
+The active compute time becomes:
+
+```text
+50 / 168 ≈ 29.8%
+```
+
+So more than 70% of unnecessary **running hours** can be removed.
+
+That does not mean the total AWS bill always falls by exactly 70%, because:
+
+- EBS volumes still incur storage cost while an instance is stopped;
+- public IPv4 or other networking resources can still cost money;
+- snapshots and data transfer are separate;
+- some workloads genuinely need after-hours availability.
+
+But for dev/test environments, scheduling is one of the easiest ways to remove idle compute.
+
+---
+
+## 9. Scheduler is not only for EC2
+
+EventBridge Scheduler supports templated and universal targets across many AWS APIs.
+
+Examples:
+
+```text
+Scheduler -> SNS
+Scheduler -> SQS
+Scheduler -> Lambda
+Scheduler -> Step Functions
+Scheduler -> ECS task
+Scheduler -> AWS service API
+```
+
+In May 2026, AWS expanded Scheduler with hundreds of additional SDK API actions, allowing more operations to be scheduled directly without custom integration code.
+
+---
+
+## 10. Reliability: retries and DLQ matter
+
+Production scheduling is not only about executing at the right time.
+
+You also need to ask:
+
+```text
+What if the API call fails?
+What if the target is temporarily unavailable?
+What happens after retries?
+```
+
+EventBridge Scheduler supports:
+
+- retry policies;
+- event retention;
+- flexible time windows;
+- dead-letter queues using Amazon SQS;
+- encryption.
+
+For important workflows, configure a DLQ so failed schedules remain observable.
+
+Scheduler uses an **at-least-once** delivery model, so targets should be designed to tolerate duplicate invocations.
+
+---
+
+## 11. Avoid overly broad IAM
+
+Do not create an execution role like:
+
+```json
+{
+  "Effect": "Allow",
+  "Action": "ec2:*",
+  "Resource": "*"
+}
+```
+
+just because it is faster.
+
+For a one-instance lab, scope the role to:
+
+```text
+Actions:
+- ec2:StartInstances
+- ec2:StopInstances
+
+Resource:
+- the specific EC2 instance ARN
+```
+
+Automated permissions deserve even more care because the action can repeat without a human watching.
+
+---
+
+## 12. When to use EventBridge Scheduler
+
+Good fit when:
+
+- the task has a time-based trigger;
+- you need one-time or recurring schedules;
+- you want to call AWS services without maintaining a cron server;
+- time-zone support matters;
+- you want managed retries and DLQ;
+- you need centralized schedule management.
+
+Use cases include:
+
+- start/stop development EC2;
+- send SNS reminders;
+- run Step Functions nightly;
+- trigger ECS tasks periodically;
+- schedule one-time future events.
+
+---
+
+## 13. When not to use it
+
+Do not use Scheduler as a replacement for load-based autoscaling.
+
+If capacity should change according to CPU, request count, or queue depth, use services such as:
+
+- EC2 Auto Scaling;
+- Application Auto Scaling;
+- ECS Service Auto Scaling.
+
+Scheduler answers:
+
+> “When should this action happen?”
+
+Autoscaling answers:
+
+> “How much capacity do I need?”
+
+They are different problems.
+
+---
+
+## 14. Cleanup
+
+After the lab:
+
+1. Delete both schedules.
+2. Delete the IAM execution role if no longer needed.
+3. Terminate the lab EC2 instance.
+4. Check EBS volumes, public IPv4/Elastic IP resources, and snapshots.
+5. Review Billing/Cost Explorer.
+
+For one-time schedules in other use cases, you can use `ActionAfterCompletion=DELETE` so the schedule is removed automatically after completion.
+
+---
+
+## References
+
+- AWS Compute Blog: [Introducing Amazon EventBridge Scheduler](https://aws.amazon.com/blogs/compute/introducing-amazon-eventbridge-scheduler/)
+- AWS DevOps Blog: [Announcing the General Availability of the Amazon EventBridge Scheduler L2 Construct](https://aws.amazon.com/blogs/devops/announcing-the-general-availability-of-the-amazon-eventbridge-scheduler-l2-construct/)
+- AWS Documentation: [Amazon EventBridge Scheduler](https://docs.aws.amazon.com/eventbridge/latest/userguide/using-eventbridge-scheduler.html)
+- AWS Documentation: [Managing targets in EventBridge Scheduler](https://docs.aws.amazon.com/scheduler/latest/UserGuide/managing-targets.html)
+- AWS What’s New: [EventBridge Scheduler adds 619 new SDK API actions](https://aws.amazon.com/about-aws/whats-new/2026/05/amazon-eventbridge-sdk-integrations/)
 
 ---
 
 ## Conclusion
-Parcel Perform’s solution demonstrates how you can use generative AI to enhance productivity and customer experience. Parcel Perform has built a text-to-SQL AI agent that transforms a business team’s question into SQL that can fetch the actual data. This improves the timeliness of data availability for decision-making that involves customers. Furthermore, the data team can avoid the undifferentiated heavy lifting to focus on complex data analysis tasks.
 
-This solution uses multiple AWS services like Amazon Bedrock and tools like LangGraph. You can start with a proof of concept and consult your AWS Solutions Architect or engage with [AWS Partners](https://partners.amazonaws.com/). If you have questions, post them on [AWS re:Post](https://repost.aws/). You can also make the development more straightforward with the help of [Amazon Q Developer](https://aws.amazon.com/q/developer/). When you face challenges, you can iterate to find the solution, which might include prompt engineering or adding additional steps to your workflow.
+Good automation does not always need Lambda, containers, or a server running cron.
 
-Security is a top priority. Make sure your AI assistant has proper guardrails in place to protect against prompt threats, inappropriate topics, profanity, leaked data, and other security issues. You can integrate Amazon Bedrock Guardrails with your generative AI application through an API.To learn more, refer to the following resources:
+If the requirement is simply:
 
-- Build a robust text-to-SQL solution generating complex queries, self-correcting, and querying diverse data sources
-- [Xây dựng giải pháp chuyển đổi văn bản sang SQL mạnh mẽ, tạo ra các truy vấn phức tạp, tự động sửa lỗi và truy vấn các nguồn dữ liệu đa dạng](https://aws.amazon.com/blogs/machine-learning/build-a-robust-text-to-sql-solution-generating-complex-queries-self-correcting-and-querying-diverse-data-sources/)
-- [LangGraph agents with Amazon Bedrock workshop](https://catalog.us-east-1.prod.workshops.aws/workshops/9bc28f51-d7c3-468b-ba41-72667f3273f1/en-US)
-- [Build a knowledge base by connecting to a structured data store](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-build-structured.html)
+```text
+At this time
+-> call an AWS API
+```
 
----
+EventBridge Scheduler may be the cleanest layer.
 
-## About the authors
-
-<div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
-  <img src="/images/3-Blog/yudho-full2.jpg" alt="Yudho Ahmad Diponegoro" style="width: 150px; height: 150px; object-fit: cover; margin-right: 20px; border-radius: 8px;">
-  <div>
-    <p><strong>Yudho Ahmad Diponegoro</strong> is a Senior Solutions Architect at AWS. Having been part of Amazon for 10+ years, he has had various roles from software development to solutions architecture. He helps startups in Singapore when it comes to architecting in the cloud. While he keeps his breadth of knowledge across technologies and industries, he focuses in AI and machine learning where he has been guiding various startups in ASEAN to adopt machine learning and generative AI at AWS.</p>
-  </div>
-</div>
-
-<div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
-  <img src="/images/3-Blog/levy-copy-1.png" alt="Le Vy" style="width: 150px; height: 150px; object-fit: cover; margin-right: 20px; border-radius: 8px;">
-  <div>
-    <p><strong>Le Vy</strong>  is the AI Team Lead at Parcel Perform, where she drives the development of AI applications and explores emerging AI research. She started her career in data analysis and deepened her focus on AI through a Master’s in Artificial Intelligence. Passionate about applying data and AI to solve real business problems, she also dedicates time to mentoring aspiring technologists and building a supportive community for youth in tech. Through her work, Vy actively challenges gender norms in the industry and champions lifelong learning as a key to innovation.</p>
-  </div>
-</div>
-
-<div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
-  <img src="/images/3-Blog/junkai.png" alt="Loke Jun Kai" style="width: 150px; height: 150px; object-fit: cover; margin-right: 20px; border-radius: 8px;">
-  <div>
-    <p><strong>Loke Jun Kai</strong>  is a GenAI/ML Specialist Solutions Architect in AWS, covering strategic customers across the ASEAN region. He works with customers ranging from Start-up to Enterprise to build cutting-edge use cases and scalable GenAI Platforms. His passion in the AI space, constant research and reading, have led to many innovative solutions built with concrete business outcomes. Outside of work, he enjoys a good game of tennis and chess.</p>
-  </div>
-</div>
+The main lesson is: **before writing more automation code, check whether a managed AWS service can perform the action directly**. Less code usually means fewer things to deploy, monitor, and debug.
