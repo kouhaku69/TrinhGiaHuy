@@ -1,52 +1,32 @@
 ---
 title: "Workshop"
-date: "2025-09-09"
+date: "2026-08-07"
 weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
 
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
-# Xây dựng Nền tảng Quản lý Nhiệm vụ với DevOps trên AWS Serverless
+# Triển khai Balan Coffee & Roastery trên AWS với Docker và Amazon EC2
 
 #### Tổng quan
 
-**AWS Serverless** cho phép xây dựng và triển khai ứng dụng mà không cần quản lý máy chủ, tự động mở rộng theo nhu cầu và chỉ trả phí cho những gì bạn sử dụng.
+Workshop hướng dẫn đầy đủ quá trình thiết kế, cấu hình AWS, triển khai và kiểm thử ứng dụng **Balan Coffee & Roastery**. Nội dung được xây dựng từ repository `trinpce192008/AWS_Workshop`, nhánh `aws-workshop-v2`, đồng thời trình bày theo cách từng bước như báo cáo mẫu `workshop-template/content/5-Workshop`.
 
-Trong workshop này, chúng ta sẽ học cách thiết kế, xây dựng và triển khai một nền tảng quản lý nhiệm vụ **TaskHub** hoàn chỉnh sử dụng kiến trúc serverless và quy trình DevSecOps tự động hóa.
+Luồng truy cập đang vận hành:
 
-Chúng ta sẽ tạo một hệ thống bao gồm frontend, backend API, database và CI/CD pipeline hoàn chỉnh. Workshop tập trung vào ba thành phần chính để xây dựng ứng dụng production-ready trên AWS:
+**User → HTTPS → Amazon CloudFront → EC2 public DNS/Elastic IP `54.251.119.230` → Amazon EC2 → Docker frontend/Nginx → Docker backend**
 
-+ **Serverless Backend** - Sử dụng AWS Lambda để xử lý nghiệp vụ, API Gateway làm cổng giao tiếp, DynamoDB lưu trữ dữ liệu, và Cognito quản lý xác thực người dùng với chi phí tối ưu.
+Backend sử dụng Amazon RDS for PostgreSQL và tích hợp Amazon S3, Amazon Cognito, Amazon Bedrock, AWS Secrets Manager cùng Amazon CloudWatch.
 
-+ **Content Delivery** - Triển khai ứng dụng Next.js trên S3, phân phối toàn cầu qua CloudFront với độ trễ thấp, và bảo vệ bằng AWS WAF chống các cuộc tấn công web phổ biến.
+#### Nội dung workshop
 
-+ **DevOps Pipeline** - Tự động hóa quy trình build, test và deploy sử dụng CodePipeline và CodeBuild, tích hợp kiểm tra bảo mật với CodeGuru, và quản lý infrastructure as code với CloudFormation.
+1. [Tài liệu thiết kế giải pháp](5.1-SolutionDesignDocument/)
+2. [Kiến trúc giải pháp](5.2-SolutionArchitecture/)
+3. [Chuẩn bị môi trường](5.3-EnvironmentSetup/)
+4. [Cấu hình AWS và triển khai](5.4-DeploymentGuide/)
+5. [Hướng dẫn giám sát](5.5-MonitoringGuide/)
+6. [Các quyết định kiến trúc](5.6-ArchitectureDecisions/)
 
-#### Nội dung
-
-1. [Tổng quan về workshop](5.1-Workshop-overview/)
-2. [Chuẩn bị](5.2-Prerequiste/)
-3. [Triển khai hàm phi máy chủ với AWS Lambda](5.3-Lambda/)
-4. [Xây dựng Cổng API với Amazon API Gateway](5.4-APIGateway/)
-5. [Lưu trữ đối tượng đơn giản và bảo mật với Amazon S3](5.6-S3/)
-6. [Tăng tốc độ phân phối nội dung với Amazon CloudFront (CDN)](5.7-CloudFront/)
-7. [Quản lý danh tính và truy cập người dùng với Amazon Cognito](5.8-Cognito/)
-8. [Quản lý khóa mã hóa với AWS Key Management Service (KMS)](5.9-KeyManagementService/)
-9. [SrcetManager](5.17-SecretManager/)
-10. [WAF](5.18-WAF/)
-
-
-
-
-
-
-
-
-
-
-
-
+{{% notice info %}}
+Điểm truy cập chính là [CloudFront](https://d3pn12mzrv3aqy.cloudfront.net). Địa chỉ [Elastic IP](http://54.251.119.230/) được dùng làm origin ổn định và hỗ trợ kiểm tra trực tiếp. Các tên tài nguyên chưa được cung cấp trong ảnh hoặc repository được ghi dưới dạng **giá trị đề xuất**; cần thay bằng ID thực tế trước khi nộp báo cáo cuối.
+{{% /notice %}}

@@ -1,36 +1,32 @@
 ---
 title: "Workshop"
-date: "2025-12-09"
+date: "2026-08-07"
 weight: 5
 chapter: false
 pre: " <b> 5. </b> "
 ---
 
-# Building a Task Management Platform with DevOps on AWS Serverless
+# Deploy Balan Coffee & Roastery on AWS with Docker and Amazon EC2
 
 #### Overview
 
-**AWS Serverless** enables you to build and deploy applications without managing servers, automatically scales based on demand, and you only pay for what you use.
+This workshop provides an end-to-end guide for designing, configuring, deploying, and validating **Balan Coffee & Roastery** on AWS. It is based on `trinpce192008/AWS_Workshop`, branch `aws-workshop-v2`, and follows the step-by-step style of `workshop-template/content/5-Workshop`.
 
-In this workshop, we will learn how to design, build, and deploy a complete task management platform **TaskHub** using serverless architecture and automated DevSecOps practices.
+The active request path is:
 
-We will create a system that includes frontend, backend API, database, and a complete CI/CD pipeline. The workshop focuses on three main components to build a production-ready application on AWS:
+**User → HTTPS → Amazon CloudFront → EC2 public DNS/Elastic IP `54.251.119.230` → Amazon EC2 → Docker frontend/Nginx → Docker backend**
 
-+ **Serverless Backend** - Use AWS Lambda for business logic processing, API Gateway as the communication layer, DynamoDB for data storage, and Cognito for user authentication management with optimized costs.
+The backend uses Amazon RDS for PostgreSQL and integrates with Amazon S3, Amazon Cognito, Amazon Bedrock, AWS Secrets Manager, and Amazon CloudWatch.
 
-+ **Content Delivery** - Deploy Next.js application on S3, distribute globally via CloudFront with low latency, and protect with AWS WAF against common web attacks.
+#### Workshop content
 
-+ **DevOps Pipeline** - Automate the build, test, and deploy process using CodePipeline and CodeBuild, integrate security scanning with CodeGuru, and manage infrastructure as code with CloudFormation.
+1. [Solution Design Document](5.1-SolutionDesignDocument/)
+2. [Solution Architecture](5.2-SolutionArchitecture/)
+3. [Environment Preparation](5.3-EnvironmentSetup/)
+4. [AWS Configuration and Deployment](5.4-DeploymentGuide/)
+5. [Monitoring Guide](5.5-MonitoringGuide/)
+6. [Architecture Decisions](5.6-ArchitectureDecisions/)
 
-#### Content
-
-1. [Workshop overview](5.1-Workshop-overview)
-2. [Prerequiste](5.2-Prerequiste/)
-3. [Deploying Serverless Functions with AWS Lambda](5.3-Lambda/)
-4. [Building an API Gateway with Amazon API Gateway](5.4-APIGateway/)
-5. [Simple and Secure Object Storage with Amazon S3](5.6-S3/)
-6. [Accelerating Content Delivery with Amazon CloudFront (CDN)](5.7-CloudFront/)
-7. [Managing User Identity and Access with Amazon Cognito](5.8-Cognito/)
-8. [Managing Encryption Keys with AWS Key Management Service (KMS)](5.9-KeyManagementService/)
-9. [SecretManager](5.17-SecretManager/)
-10. [WAF](5.18-WAF/)
+{{% notice info %}}
+The primary endpoint is [CloudFront](https://d3pn12mzrv3aqy.cloudfront.net). The [Elastic IP](http://54.251.119.230/) is the stable origin address and supports direct diagnostics. Resource names not present in the repository or supplied evidence are clearly marked as **recommended values** and must be replaced with real IDs before final submission.
+{{% /notice %}}
